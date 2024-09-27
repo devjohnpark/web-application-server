@@ -15,6 +15,7 @@ import java.net.Socket;
 // 클라이언트가 서버로 들어온 요청을 수락하고, 실제 클라이언트와 연결할 소켓을 생성한다.
 // 클라이언트 연결 대기용 소켓 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class WebServer {
+    private static final Logger log = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
 
     public static void main(String[] args) throws IOException {
@@ -22,6 +23,8 @@ public class WebServer {
         if (args != null && args.length > 0) { port = Integer.parseInt(args[0]); }
 
         try (ServerSocket listeningSocket = new ServerSocket()) {
+            log.info("Web Application Server started {} port.", port);
+
             listeningSocket.bind(new InetSocketAddress(port));
             Socket acceptedSocket;
             // accept(): 클라이언트와 연결 요청을 할때까지 block 되고 연결 요청 수락시 새로운 소켓을 생성, 따라서 acceptedSocket은 null 값이 될수 없음

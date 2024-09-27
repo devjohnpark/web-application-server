@@ -12,6 +12,7 @@ import java.net.Socket;
 // 이때, Java의 I/O 스트림을 사용해서 소켓을 통해 데이터 송수신한다.
 // 클라이언트와 연결된 소켓을 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class RequestHandler extends Thread {
+    private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connectedSocket;
 
     public RequestHandler(Socket connectedSocket) {
@@ -20,6 +21,7 @@ public class RequestHandler extends Thread {
 
     @Override
     public void run() {
+        log.debug("New Client Connect! Connected IP : {}, Port : {}", connectedSocket.getInetAddress(), connectedSocket.getPort());
         try (
                 // Socket(TCP) Buffer에 저장된 데이터를 읽기 위한 InputStream을 제공, 이 스트림을 통해 클라이언트로 부터 받은 데이터 받아올수 있다.
                 InputStream in = connectedSocket.getInputStream();
@@ -32,7 +34,7 @@ public class RequestHandler extends Thread {
             responseHeader(dos, body.length);
             responseBody(dos, in, body);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
@@ -44,7 +46,7 @@ public class RequestHandler extends Thread {
             dos.writeBytes( "Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
@@ -53,7 +55,7 @@ public class RequestHandler extends Thread {
             // 버퍼를 사용해서 한번에 전송
             dos.write(body, 0, body.length);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 }
