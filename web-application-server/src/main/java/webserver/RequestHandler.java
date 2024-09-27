@@ -27,9 +27,10 @@ public class RequestHandler extends Thread {
                 InputStream in = connectedSocket.getInputStream();
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
-                // 데이터를 읽고 쓰는데 1 byte 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
-                DataOutputStream dos = new DataOutputStream(out)
         ) {
+            // 데이터를 읽고 쓰는데 1 byte 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
+            // DataOutputStream은 OutputStream을 래핑(wrapping)하여 추가적인 기능을 제공하는 보조 스트림 때문에 별도로 close() 할필요없다.
+            DataOutputStream dos = new DataOutputStream(out);
             byte[] body = "Hello World!".getBytes();
             responseHeader(dos, body.length);
             responseBody(dos, in, body);
@@ -52,10 +53,11 @@ public class RequestHandler extends Thread {
 
     private void responseBody(DataOutputStream dos, InputStream in, byte[] body) {
         try {
-            // 버퍼를 사용해서 한번에 전송
             dos.write(body, 0, body.length);
+            dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 }
+
