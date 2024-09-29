@@ -1,4 +1,4 @@
-package webserver;
+package com.hello_webserver.webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,12 @@ public class WebServer {
         int port = DEFAULT_PORT;
         if (args != null && args.length > 0) { port = Integer.parseInt(args[0]); }
 
-        try (ServerSocket listeningSocket = new ServerSocket()) {
-            log.info("Web Application Server started {} port.", port);
-
-            listeningSocket.bind(new InetSocketAddress(port));
-            Socket acceptedSocket;
+        try (ServerSocket listenSocket = new ServerSocket(port)) {
+            log.debug("Web Application Server started {} port.", port);
+            Socket estabalishedSocket;
             // accept(): 클라이언트와 연결 요청을 할때까지 block 되고 연결 요청 수락시 새로운 소켓을 생성, 따라서 acceptedSocket은 null 값이 될수 없음
-            while ((acceptedSocket = listeningSocket.accept()) != null) {
-                RequestHandler requestHandler = new RequestHandler(acceptedSocket);
+            while ((estabalishedSocket = listenSocket.accept()) != null) {
+                RequestHandler requestHandler = new RequestHandler(estabalishedSocket);
                 requestHandler.start();
             }
         }

@@ -1,4 +1,4 @@
-package webserver;
+package com.hello_webserver.webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +21,18 @@ public class RequestHandler extends Thread {
 
     @Override
     public void run() {
-        log.debug("New Client Connect! Connected IP : {}, Port : {}", connectedSocket.getInetAddress(), connectedSocket.getPort());
+
+        log.debug("New Client Connected IP: {}, Port: {}", connectedSocket.getInetAddress(), connectedSocket.getPort());
         try (
                 // Socket(TCP) Buffer에 저장된 데이터를 읽기 위한 InputStream을 제공, 이 스트림을 통해 클라이언트로 부터 받은 데이터 받아올수 있다.
                 InputStream in = connectedSocket.getInputStream();
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
         ) {
-            // 데이터를 읽고 쓰는데 1 byte 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
-            // DataOutputStream은 OutputStream을 래핑(wrapping)하여 추가적인 기능을 제공하는 보조 스트림 때문에 별도로 close() 할필요없다.
+            // 데이터를 읽고 쓰는데 바이트 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = "Hello World!".getBytes();
+
             responseHeader(dos, body.length);
             responseBody(dos, in, body);
         } catch (IOException e) {
@@ -54,7 +55,7 @@ public class RequestHandler extends Thread {
     private void responseBody(DataOutputStream dos, InputStream in, byte[] body) {
         try {
             dos.write(body, 0, body.length);
-            dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
+//            dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
         } catch (IOException e) {
             log.error(e.getMessage());
         }

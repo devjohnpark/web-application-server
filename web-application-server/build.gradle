@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group = 'org.webserver'
+group = 'com.hello_webserver'
 version = '1.0.0-SNAPSHOT'
 
 repositories {
@@ -44,7 +44,7 @@ tasks.named('test') {
 }
 
 def jarManifestAttributes = [
-        'Main-Class': 'webserver.WebServer'
+        'Main-Class': 'com.hello_webserver.webserver.WebServer'
 ]
 
 // Build to jar file task (./gradlew build, ./gradlew jar)
