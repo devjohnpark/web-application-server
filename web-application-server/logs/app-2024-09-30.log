@@ -1,0 +1,20 @@
+2024-09-30 11:49:57.206 [main] DEBUG c.h.webserver.WebServer - Web Application Server started 8080 port.
+2024-09-30 11:50:03.912 [Thread-0] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 62951
+2024-09-30 11:50:03.912 [Thread-1] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 62952
+2024-09-30 11:50:18.383 [main] DEBUG c.h.webserver.WebServer - Web Application Server started 8080 port.
+2024-09-30 11:50:23.790 [Thread-0] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 63037
+2024-09-30 11:50:23.790 [Thread-1] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 63038
+2024-09-30 11:50:51.165 [Thread-2] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 63161
+2024-09-30 12:28:21.656 [main] DEBUG c.h.webserver.WebServer - Web Application Server started 8080 port.
+2024-09-30 12:28:28.065 [Thread-0] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 56679
+2024-09-30 12:28:28.065 [Thread-1] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 56680
+2024-09-30 12:28:32.790 [Thread-2] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 56701
+2024-09-30 12:28:32.791 [Thread-3] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 56702
+2024-09-30 12:30:38.753 [main] DEBUG c.h.webserver.WebServer - Web Application Server started 8080 port.
+2024-09-30 12:30:56.201 [Thread-0] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 57924
+2024-09-30 12:33:54.384 [main] DEBUG c.h.webserver.WebServer - Web Application Server started 8080 port.
+2024-09-30 12:34:07.729 [Thread-0] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 59033
+2024-09-30 12:34:07.729 [Thread-1] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 59034
+2024-09-30 12:34:09.528 [Thread-2] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 59043
+2024-09-30 12:34:09.529 [Thread-3] DEBUG c.h.webserver.RequestHandler - New Client Connected IP: /0:0:0:0:0:0:0:1, Port: 59044
+2024-09-30 16:18:04.200 [main] DEBUG c.h.webserver.WebServer - Web Application Server started 8080 port.

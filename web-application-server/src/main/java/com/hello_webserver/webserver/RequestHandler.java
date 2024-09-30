@@ -31,7 +31,7 @@ public class RequestHandler extends Thread {
         ) {
             // 데이터를 읽고 쓰는데 바이트 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World!".getBytes();
+            byte[] body = "Hello Client!".getBytes();
 
             responseHeader(dos, body.length);
             responseBody(dos, in, body);

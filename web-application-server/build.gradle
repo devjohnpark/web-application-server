@@ -17,9 +17,6 @@ dependencies {
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // This dependency is used by the application.
-    implementation libs.guava
-
     // add logback with SLF4J (Logging Implementation)
     implementation libs.logback.classic
 
