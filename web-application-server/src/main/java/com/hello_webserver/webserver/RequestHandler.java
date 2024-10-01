@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 // RequsetHandler
 // 사용자 요청을 처리하는 스레드로 응답을 처리한다.
@@ -29,18 +32,58 @@ public class RequestHandler extends Thread {
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
         ) {
+            String filePath = readHeader(in);
+            byte[] body = getResource(filePath);
+
             // 데이터를 읽고 쓰는데 바이트 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello Client!".getBytes();
 
-            responseHeader(dos, body.length);
+            response200Header(dos, body.length);
             responseBody(dos, in, body);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    private void responseHeader(DataOutputStream dos, int lengthOfBodyContent) {
+    private String readHeader(InputStream in) {
+        String filePath = null;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String line = reader.readLine();
+            String[] tokens = line.split(" ");
+            for (String token : tokens) {
+                if (token.equals("/index.html")) {
+                    filePath = "/index.html";
+                    log.debug("Resource was requested file path: {}", filePath);
+                }
+            }
+
+            while (line != null && !line.isEmpty()) {
+                System.out.println(line);
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return filePath;
+    }
+
+    private byte[] getResource(String filePath) {
+        byte[] body = new byte[0];
+        if (filePath == null || filePath.isEmpty()) {
+            return body;
+        }
+        String rootPath = "webapp";
+        try {
+            body = Files.readAllBytes(Paths.get(rootPath + filePath));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return body;
+    }
+
+
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             // HTTP 메세지에서 문자열 줄끝을 구분하기 위해 '\r\n'을 사용
             dos.writeBytes("HTTP/1.1 200 OK\r\n");
