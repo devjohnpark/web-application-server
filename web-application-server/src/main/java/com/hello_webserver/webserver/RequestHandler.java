@@ -17,6 +17,7 @@ import java.util.Objects;
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connectedSocket;
+    private final static String rootPath = "webapp";
 
     public RequestHandler(Socket connectedSocket) {
         this.connectedSocket = connectedSocket;
@@ -32,14 +33,18 @@ public class RequestHandler extends Thread {
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
         ) {
+
             String filePath = readHeader(in);
             byte[] body = getResource(filePath);
 
             // 데이터를 읽고 쓰는데 바이트 단위가 아닌 기본형 또는 참조형으로 읽고 쓸수 있도록 DataInputStream과 DataOutputStream 사용
             DataOutputStream dos = new DataOutputStream(out);
-
-            response200Header(dos, body.length);
-            responseBody(dos, in, body);
+            if (body.length > 0) {
+                response200Header(dos, body.length);
+                responseBody(dos, in, body);
+            } else {
+                response404Header(dos, body.length);
+            }
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -50,17 +55,11 @@ public class RequestHandler extends Thread {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line = reader.readLine();
+            if (line == null) { return filePath; }
             String[] tokens = line.split(" ");
-            for (String token : tokens) {
-                if (token.equals("/index.html")) {
-                    filePath = "/index.html";
-                    log.debug("Resource was requested file path: {}", filePath);
-                }
-            }
-
-            while (line != null && !line.isEmpty()) {
-                System.out.println(line);
-                line = reader.readLine();
+            if (tokens[1].equals("/") || tokens[1].equals("/index.html")) {
+                filePath = "/index.html";
+                log.debug("Resource was requested file path: {}", filePath);
             }
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -73,7 +72,6 @@ public class RequestHandler extends Thread {
         if (filePath == null || filePath.isEmpty()) {
             return body;
         }
-        String rootPath = "webapp";
         try {
             body = Files.readAllBytes(Paths.get(rootPath + filePath));
         } catch (IOException e) {
@@ -82,13 +80,23 @@ public class RequestHandler extends Thread {
         return body;
     }
 
-
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             // HTTP 메세지에서 문자열 줄끝을 구분하기 위해 '\r\n'을 사용
             dos.writeBytes("HTTP/1.1 200 OK\r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes( "Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void response404Header(DataOutputStream dos, int lengthOfBodyContent) {
+        try {
+            // HTTP 메세지에서 문자열 줄끝을 구분하기 위해 '\r\n'을 사용
+            dos.writeBytes("HTTP/1.1 404 Not Found\r\n");
+            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
         } catch (IOException e) {
             log.error(e.getMessage());
