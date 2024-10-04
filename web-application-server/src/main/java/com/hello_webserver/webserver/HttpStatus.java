@@ -3,15 +3,14 @@ package com.hello_webserver.webserver;
 public enum HttpStatus {
     OK(200, "OK"),
     BAD_REQUEST(400, "Bad Request"),
-    FORBIDDEN(403, "Forbidden"),
     NOT_FOUND(404, "Not Found");
 
     private final int code;
-    private final String message;
+    private final String codeMessage;
 
-    HttpStatus(int code, String message) {
+    HttpStatus(int code, String codeMessage) {
         this.code = code;
-        this.message = message;
+        this.codeMessage = codeMessage;
     }
 
     public int getCode() {
@@ -19,6 +18,6 @@ public enum HttpStatus {
     }
 
     public String getMessage() {
-        return message;
+        return codeMessage;
     }
 }

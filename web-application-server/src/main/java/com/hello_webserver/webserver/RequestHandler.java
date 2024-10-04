@@ -7,7 +7,9 @@ import util.DateUtils;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.*;
 
 // RequsetHandler
 // 사용자 요청을 처리하는 스레드로 응답을 처리한다.
@@ -16,18 +18,27 @@ import java.nio.file.Paths;
 // 클라이언트와 연결된 소켓을 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
-    private static final String ROOT_PATH = "webapp";
     private final Socket connectedSocket;
+    private final HttpRequest httpRequest;
+    private final HttpResponse httpResponse;
+//    private static final String ROOT_PATH = "webapp";
 
-    public RequestHandler(Socket connectedSocket) {
+    public RequestHandler(Socket connectedSocket, HttpRequest httpRequest, HttpResponse httpResponse) {
         this.connectedSocket = connectedSocket;
+        this.httpRequest = httpRequest;
+        this.httpResponse = httpResponse;
     }
 
-    // 1. 클라이언트 요청 헤더에서 리소스 읽기  (리소스 null 이면 400)
-    // 2. 헤더에서 리소스 경로 추출 (/와 /index.html은 index.html로 응답)
-    // 3. 해당 경로의 리소스의 데이터 가져오기 (리소스 가져오기 실패시 404/리소그 가져오기 성공시 200)
+    // 1. 클라이언트 요청 헤더에서 HTTP Method과 리소스 경로 확인
+    // 2. 클라이언트 요청 헤더에서 리소스 읽기 (리소스의 디렉토리 없으면 400)
+    // 3. 해당 경로의 리소스의 데이터 가져오기 (리소스 가져오기 실패시 404/리소스 가져오기 성공시 200)
     // 4. 응답 헤더 쓰기
     // 5. 응답 바디 쓰기
+
+    // RequestHandler 클래스에 역할이 집중되어 테스트하기가 어려짐 -> 객체 역할 분리해서 private 메서드가 아닌 public 메서드로 되어 테스트 유리
+    // 클라이언틍 요청에 대한 처리 (RequestHandler)
+    // 클라이언트 요청 읽기 (HttpRequest)
+    // 클라이언트 응답 쓰기(HttpResponse)
     @Override
     public void run() {
         log.debug("New Client Connected IP: {}, Port: {}", connectedSocket.getInetAddress(), connectedSocket.getPort());
@@ -39,73 +50,15 @@ public class RequestHandler extends Thread {
         ) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            String resourcePath = readResourcePath(reader); // 헤더에서 요청된 리소스 읽기
-            HttpResponse httpResponse = findResource(resourcePath); // 요청된 리소스의 데이터를 읽기
-
+            // 헤더 읽기 후 유효성 확인 -> 요청 리소스 존재하는지 확인 -> 응답 메세지 생성 -> 응답 보내기
+            RequestLine requestLine = httpRequest.readRequestHeader(reader); // 헤더 읽기 후 유효성 확인
+            ResponseMessage responseMessage = httpResponse.createResponse(requestLine); // 응답 메세지 생성
             DataOutputStream dos = new DataOutputStream(out);
-            responseHeader(dos, httpResponse, httpResponse.getBody().length);
-            responseBody(dos, httpResponse.getBody());
+            httpResponse.sendResponse(dos, responseMessage); // 응답 보내기
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    private String readResourcePath(BufferedReader br) {
-        String resource = null;
-        try {
-            String line = br.readLine();
-            String[] tokens = line.split(" ");
-            if (tokens.length >= 2) { resource = tokens[1]; }
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        return resource;
-    }
-
-    private HttpResponse findResource(String resourcePath) {
-        if (resourcePath == null) {
-            return new HttpResponse(HttpStatus.BAD_REQUEST, "The server cannot or will not process the request.".getBytes());
-        }
-
-        byte[] content = getResource(resourcePath);
-        if (content == null) {
-            return new HttpResponse(HttpStatus.NOT_FOUND, "The requested resource could not be found.".getBytes());
-        }
-
-        return new HttpResponse(HttpStatus.OK, content);
-    }
-
-    private byte[] getResource(String filePath) {
-        byte[] body = null;
-        if (filePath.equals("/")) { filePath = "/index.html"; }
-        try {
-            body = Files.readAllBytes(Paths.get(ROOT_PATH + filePath));
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        return body;
-    }
-
-    private void responseHeader(DataOutputStream dos, HttpResponse httpResponse, int lengthBody) {
-        try {
-            // HTTP 메세지에서 문자열 줄끝을 구분하기 위해 '\r\n'을 사용
-            dos.writeBytes(String.format("HTTP/1.1 %d %s\r\n", httpResponse.getStatus().getCode(), httpResponse.getStatus().getMessage()));
-            dos.writeBytes(String.format("Date: %s\r\n", DateUtils.getCurrentDate()));
-            dos.writeBytes("Content-Type: text/html; charset=utf-8\r\n");
-            dos.writeBytes( "Content-Length: " + lengthBody + "\r\n");
-            dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
 }
 

@@ -27,7 +27,7 @@ public class WebServer {
             Socket estabalishedSocket;
             // accept(): 클라이언트와 연결 요청을 할때까지 block 되고 연결 요청 수락시 새로운 소켓을 생성, 따라서 acceptedSocket은 null 값이 될수 없음
             while ((estabalishedSocket = listenSocket.accept()) != null) {
-                RequestHandler requestHandler = new RequestHandler(estabalishedSocket);
+                RequestHandler requestHandler = new RequestHandler(estabalishedSocket, new HttpRequest(), new HttpResponse());
                 requestHandler.start();
             }
         }
