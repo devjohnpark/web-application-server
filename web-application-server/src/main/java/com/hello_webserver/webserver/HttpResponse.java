@@ -19,25 +19,38 @@ public class HttpResponse {
     }
 
     public ResponseMessage createResponse(RequestLine requestLine) {
-        // 400
-        if (requestLine == null) {
+        // 400: 유효한 http method와 유효한 url 검증 실패
+        if (!isValidRequest(requestLine)) {
             return createErrorResponse(HttpStatus.BAD_REQUEST, "The server cannot or will not process the request.");
         }
 
         byte[] content = null;
 
         // GET Method
-        if (requestLine.getMethod().equals("GET")) {
+        if (isGetMethod(requestLine)) {
             content = readResource(requestLine.getPath());
         }
 
         // 404
-        if (content == null) {
+        if (isGetMethod(requestLine) && content == null) {
             return createErrorResponse(HttpStatus.NOT_FOUND, "The requested resource could not be found.");
+        }
+
+        // 405
+        if (content == null) {
+            return createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, "The request method is known by the server but is not supported by the target resource.");
         }
 
         // 200
         return new ResponseMessage(HttpStatus.OK, content, getResourceContentType(requestLine.getPath()));
+    }
+
+    private boolean isValidRequest(RequestLine requestLine) {
+        return requestLine != null;
+    }
+
+    private boolean isGetMethod(RequestLine requestLine) {
+        return "GET".equals(requestLine.getMethod());
     }
 
     public void sendResponse(DataOutputStream dos, ResponseMessage responseMessage) {
