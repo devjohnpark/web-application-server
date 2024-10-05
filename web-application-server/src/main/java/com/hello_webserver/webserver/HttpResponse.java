@@ -3,7 +3,6 @@ package com.hello_webserver.webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.DateUtils;
-import util.HttpRequestUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +12,11 @@ import java.nio.file.Paths;
 
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
+    private final String webAppDir;
+
+    public HttpResponse(String webAppDir) {
+        this.webAppDir = webAppDir;
+    }
 
     public ResponseMessage createResponse(RequestLine requestLine) {
         // 400
@@ -47,13 +51,26 @@ public class HttpResponse {
 
     // 각 리소스 포맷마다 ResourceReader 필요
     private byte[] readResource(String filePath) {
-        if (filePath.equals("/")) { filePath = "/index.html"; }
+        byte[] resource = null;
+        filePath = setDefaultPath(filePath);
+        if (filePath.endsWith(".html")) {
+            resource = readHTML(filePath);
+        }
+        return resource;
+    }
+
+    private byte[] readHTML(String filePath) {
         try {
-            return Files.readAllBytes(Paths.get(HttpRequestUtils.ROOT_PATH + filePath));
+            return Files.readAllBytes(Paths.get(webAppDir + filePath));
         } catch (IOException e) {
             log.debug(e.getMessage());
         }
         return null;
+    }
+
+    private static String setDefaultPath(String filePath) {
+        if (filePath.equals("/")) { filePath = "/index.html"; }
+        return filePath;
     }
 
     private String getResourceContentType(String resourcePath) {
@@ -70,7 +87,7 @@ public class HttpResponse {
             dos.writeBytes(String.format("HTTP/1.1 %d %s\r\n", responseMessage.getStatus().getCode(), responseMessage.getStatus().getMessage()));
             dos.writeBytes(String.format("Date: %s\r\n", DateUtils.getCurrentDate()));
             dos.writeBytes(String.format("Content-Type: %s\r\n", responseMessage.getContentType()));
-            dos.writeBytes( "Content-Length: " + lengthBody + "\r\n");
+            dos.writeBytes(String.format( "Content-Length: %d\r\n", lengthBody));
             dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
         } catch (IOException e) {
             log.error(e.getMessage());

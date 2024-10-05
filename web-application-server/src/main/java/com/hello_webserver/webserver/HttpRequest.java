@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpRequestUtils;
 
 // 클라이언트 요청 읽기(HttpRequest)
 // 1. HTTP 요청 메세지의 헤더를 읽는다.
@@ -15,11 +14,17 @@ import util.HttpRequestUtils;
 // 2. HTTP 요청 메세지의 바디를 읽는다.
 public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
+    private final String webAppDir;
+
+    public HttpRequest(String webAppDir) {
+        this.webAppDir = webAppDir;
+    }
 
     public RequestLine readRequestHeader(BufferedReader br) {
         try {
             String line = br.readLine();
             String[] tokens = line.split(" ");
+
             if (tokens.length >= 2) {
                 return vaildRequestLine(tokens[0], tokens[1]);
             }
@@ -36,8 +41,10 @@ public class HttpRequest {
     // check endpoint
     private boolean isResourcePathAllowed(String path) {
         int lastSlashIndex = path.lastIndexOf("/");
-        String filePath = HttpRequestUtils.ROOT_PATH + path.substring(0, lastSlashIndex);
-        return Files.exists(Path.of(filePath));
+        if (lastSlashIndex >= 0) {
+            return Files.exists(Path.of(webAppDir + path.substring(0, lastSlashIndex)));
+        }
+        return false;
     }
 
     private RequestLine vaildRequestLine(String method, String path) {

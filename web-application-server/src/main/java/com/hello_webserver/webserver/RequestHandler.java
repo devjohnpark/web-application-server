@@ -21,7 +21,6 @@ public class RequestHandler extends Thread {
     private final Socket connectedSocket;
     private final HttpRequest httpRequest;
     private final HttpResponse httpResponse;
-//    private static final String ROOT_PATH = "webapp";
 
     public RequestHandler(Socket connectedSocket, HttpRequest httpRequest, HttpResponse httpResponse) {
         this.connectedSocket = connectedSocket;
@@ -37,8 +36,8 @@ public class RequestHandler extends Thread {
 
     // RequestHandler 클래스에 역할이 집중되어 테스트하기가 어려짐 -> 객체 역할 분리해서 private 메서드가 아닌 public 메서드로 되어 테스트 유리
     // 클라이언틍 요청에 대한 처리 (RequestHandler)
-    // 클라이언트 요청 읽기 (HttpRequest)
-    // 클라이언트 응답 쓰기(HttpResponse)
+    // 클라이언트 요청 데이터 처리 (HttpRequest)
+    // 클라이언트 응답 데이터 처리(HttpResponse)
     @Override
     public void run() {
         log.debug("New Client Connected IP: {}, Port: {}", connectedSocket.getInetAddress(), connectedSocket.getPort());
