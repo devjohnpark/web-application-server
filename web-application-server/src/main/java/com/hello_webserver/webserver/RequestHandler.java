@@ -47,10 +47,15 @@ public class RequestHandler extends Thread {
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
         ) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line = br.readLine();
+            log.debug("Request Line: {}", line);
+            if (line == null) {
+                return;
+            }
 
             // 헤더 읽기 후 유효성 확인 -> 요청 리소스 존재하는지 확인 -> 응답 메세지 생성 -> 응답 보내기
-            RequestLine requestLine = httpRequest.readRequestHeader(reader); // 헤더 읽기 후 유효성 확인
+            RequestLine requestLine = httpRequest.readRequestHeader(line); // 헤더 읽기 후 유효성 확인
             ResponseMessage responseMessage = httpResponse.createResponse(requestLine); // 응답 메세지 생성
             DataOutputStream dos = new DataOutputStream(out);
             httpResponse.sendResponse(dos, responseMessage); // 응답 보내기

@@ -20,16 +20,12 @@ public class HttpRequest {
         this.webAppDir = webAppDir;
     }
 
-    public RequestLine readRequestHeader(BufferedReader br) {
-        try {
-            String line = br.readLine();
-            String[] tokens = line.split(" ");
-
-            if (tokens.length >= 2) {
-                return vaildRequestLine(tokens[0], tokens[1]);
-            }
-        } catch (IOException e) {
-            log.debug(e.getMessage());
+    public RequestLine readRequestHeader(String requestline) {
+        String[] tokens = requestline.split(" ");
+        if (tokens.length >= 2) {
+            String method = tokens[0];
+            String uri = tokens[1];
+            return vaildRequestLine(method, uri);
         }
         return null;
     }
