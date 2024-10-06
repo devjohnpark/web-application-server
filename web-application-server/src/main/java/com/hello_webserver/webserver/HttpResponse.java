@@ -28,17 +28,19 @@ public class HttpResponse {
 
         // GET Method
         if (isGetMethod(requestLine)) {
-            content = readResource(requestLine.getPath());
-        }
-
-        // 404
-        if (isGetMethod(requestLine) && content == null) {
-            return createErrorResponse(HttpStatus.NOT_FOUND, "The requested resource could not be found.");
+            return handleGetRequest(requestLine);
         }
 
         // 405
+        return createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, "The request method is known by the server but is not supported by the target resource.");
+    }
+
+    private ResponseMessage handleGetRequest(RequestLine requestLine) {
+        byte[] content = readResource(requestLine.getPath());
+
+        // 404
         if (content == null) {
-            return createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, "The request method is known by the server but is not supported by the target resource.");
+            return createErrorResponse(HttpStatus.NOT_FOUND, "The requested resource could not be found.");
         }
 
         // 200
