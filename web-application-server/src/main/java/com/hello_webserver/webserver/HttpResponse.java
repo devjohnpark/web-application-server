@@ -68,13 +68,13 @@ public class HttpResponse {
     private byte[] readResource(String filePath) {
         byte[] resource = null;
         filePath = setDefaultPath(filePath);
-        if (filePath.endsWith(".html")) {
-            resource = readHTML(filePath);
+        if (filePath.endsWith(".html") || filePath.endsWith(".ico")) {
+            resource = readFile(filePath);
         }
         return resource;
     }
 
-    private byte[] readHTML(String filePath) {
+    private byte[] readFile(String filePath) {
         try {
             return Files.readAllBytes(Paths.get(webAppDir + filePath));
         } catch (IOException e) {
