@@ -1,10 +1,11 @@
 package com.hello_webserver.webserver;
 
+import com.hello_webserver.request.HttpRequest;
+import com.hello_webserver.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 

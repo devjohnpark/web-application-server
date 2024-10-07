@@ -1,14 +1,12 @@
 package com.hello_webserver.webserver;
 
+import com.hello_webserver.request.HttpRequest;
+import com.hello_webserver.request.RequestLine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.SocketImpl;
-
 import static org.assertj.core.api.Assertions.*; // assertThat
-import static org.junit.jupiter.api.Assertions.*; // assertThrow
+
 
 // RequestLine에 따른 유효값 테스트
 //  GET / HTTP/1.1

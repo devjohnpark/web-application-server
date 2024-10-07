@@ -1,4 +1,4 @@
-package com.hello_webserver.webserver;
+package com.hello_webserver.response;
 
 public enum HttpStatus {
     OK(200, "OK"),

@@ -1,7 +1,4 @@
-package com.hello_webserver.webserver;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
+package com.hello_webserver.request;
 
 // 요청 메서드와 URI를 담는 클래스
 public class RequestLine {

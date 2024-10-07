@@ -1,8 +1,9 @@
-package com.hello_webserver.webserver;
+package com.hello_webserver.response;
 
+import com.hello_webserver.webserver.RequestHandler;
+import com.hello_webserver.request.RequestLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.DateUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class HttpResponse {
         return null;
     }
 
-    private static String setIfDefaultPath(String filePath) {
+    private String setIfDefaultPath(String filePath) {
         if (filePath.equals("/")) { return "/index.html"; }
         return filePath;
     }

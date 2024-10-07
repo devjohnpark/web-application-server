@@ -1,5 +1,9 @@
 package com.hello_webserver.webserver;
 
+import com.hello_webserver.request.RequestLine;
+import com.hello_webserver.response.HttpResponse;
+import com.hello_webserver.response.HttpStatus;
+import com.hello_webserver.response.ResponseMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.DateUtils;
@@ -7,12 +11,10 @@ import util.DateUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*; // assertThat
-import static org.junit.jupiter.api.Assertions.*; // assertThrow
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 // RequestLine에 따른 응답 메세지 상태 테스트
@@ -32,39 +34,32 @@ class HttpResponseTest {
 
     }
 
-//    @Test
-//    void sendResponse() throws IOException {
-//        // Given
-//        String content = "Hello World";
-//        String date = DateUtils.getCurrentDate();
-//        String contentType = "text/html; charset=utf-8";
-//        int lengthBody = content.length();
-//        byte[] body = content.getBytes(StandardCharsets.UTF_8);
-//        ResponseMessage responseMessage = new ResponseMessage(HttpStatus.OK, body, contentType);
-//        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); // 출력한 데이터 버퍼에서 가져오기 위해서 사용
-//            DataOutputStream dos = new DataOutputStream(baos);) {
-//
-//            // When
-//            httpResponse.sendResponse(dos, responseMessage, date);
-//
-//            // Then
-//            String actualResponse = baos.toString(StandardCharsets.UTF_8);
-//            String[] expectedResponse = {
-//                    String.format("HTTP/1.1 %d %s", responseMessage.getStatus().getCode(), responseMessage.getStatus().getMessage()),
-//                    String.format("Date: %s", date),
-//                    String.format("Content-Type: %s", responseMessage.getContentType()),
-//                    String.format("Content-Length: %d", lengthBody),
-//            };
-//
-//            String[] actualLine = actualResponse.split("\r\n");
-//            for (int i = 0; i < expectedResponse.length; i++) {
-//                assertThat(actualLine[i]).isEqualTo(expectedResponse[i]);
-//            }
-//            assertThat(actualLine[expectedResponse.length + 1]).isEqualTo(content); // "\r\n\r\n" + contentType
-//        } catch (IOException e) {
-//            throw new IOException(e);
-//        }
-//    }
+    @Test
+    void sendResponse() throws IOException {
+        // Given
+        String content = "Hello World";
+        String date = DateUtils.getCurrentDate();
+        String contentType = "text/html; charset=utf-8";
+        int lengthBody = content.length();
+        byte[] body = content.getBytes(StandardCharsets.UTF_8);
+        ResponseMessage responseMessage = new ResponseMessage(HttpStatus.OK, body, contentType);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); // 출력한 데이터 버퍼에서 가져오기 위해서 사용
+             DataOutputStream dos = new DataOutputStream(baos);) {
+
+            // When
+            httpResponse.sendResponse(dos, responseMessage, date);
+
+            // Then
+            String actualResponse = baos.toString(StandardCharsets.UTF_8);
+            assertTrue(actualResponse.startsWith(String.format("HTTP/1.1 %d %s", responseMessage.getStatus().getCode(), responseMessage.getStatus().getMessage())));
+            assertTrue(actualResponse.contains(String.format("Date: %s", date)));
+            assertTrue(actualResponse.contains(String.format("Content-Type: %s", responseMessage.getContentType())));
+            assertTrue(actualResponse.contains(String.format("Content-Length: %d", lengthBody)));
+            assertTrue(actualResponse.endsWith("\r\n\r\n" + content));
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+    }
 
     @Test
     void responseMessage_null() {
