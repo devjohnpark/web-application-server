@@ -20,8 +20,8 @@ public class HttpRequest {
         this.webAppDir = webAppDir;
     }
 
-    public RequestLine readRequestHeader(String requestline) {
-        String[] tokens = requestline.split(" ");
+    public RequestLine readRequestHeader(String requestLine) {
+        String[] tokens = requestLine.split(" ");
         if (tokens.length >= 2) {
             String method = tokens[0];
             String uri = tokens[1];

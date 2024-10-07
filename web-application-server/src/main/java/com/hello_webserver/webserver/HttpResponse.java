@@ -24,8 +24,6 @@ public class HttpResponse {
             return createErrorResponse(HttpStatus.BAD_REQUEST, "The server cannot or will not process the request.");
         }
 
-        byte[] content = null;
-
         // GET Method
         if (isGetMethod(requestLine)) {
             return handleGetRequest(requestLine);
@@ -35,16 +33,21 @@ public class HttpResponse {
         return createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, "The request method is known by the server but is not supported by the target resource.");
     }
 
+    public void sendResponse(DataOutputStream dos, ResponseMessage responseMessage, String date) {
+        responseHeader(dos, responseMessage, responseMessage.getBody().length, date);
+        responseBody(dos, responseMessage.getBody());
+    }
+
     private ResponseMessage handleGetRequest(RequestLine requestLine) {
-        byte[] content = readResource(requestLine.getPath());
+        Resource resource = readResource(setIfDefaultPath(requestLine.getPath()));
 
         // 404
-        if (content == null) {
+        if (resource == null) {
             return createErrorResponse(HttpStatus.NOT_FOUND, "The requested resource could not be found.");
         }
 
         // 200
-        return new ResponseMessage(HttpStatus.OK, content, getResourceContentType(requestLine.getPath()));
+        return new ResponseMessage(HttpStatus.OK, resource.getData(), getResponseContentType(resource.getFormat()));
     }
 
     private boolean isValidRequest(RequestLine requestLine) {
@@ -55,23 +58,16 @@ public class HttpResponse {
         return "GET".equals(requestLine.getMethod());
     }
 
-    public void sendResponse(DataOutputStream dos, ResponseMessage responseMessage, String date) {
-        responseHeader(dos, responseMessage, responseMessage.getBody().length, date);
-        responseBody(dos, responseMessage.getBody());
-    }
-
     private ResponseMessage createErrorResponse(HttpStatus status, String content) {
-        return new ResponseMessage(status, content.getBytes(), "text/plain; charset=utf-8");
+        return new ResponseMessage(status, content.getBytes(), getResponseContentType(""));
     }
 
     // 각 리소스 포맷마다 ResourceReader 필요
-    private byte[] readResource(String filePath) {
-        byte[] resource = null;
-        filePath = setDefaultPath(filePath);
-        if (filePath.endsWith(".html") || filePath.endsWith(".ico")) {
-            resource = readFile(filePath);
+    private Resource readResource(String filePath) {
+        if (filePath.endsWith(".html")) {
+            return new Resource(readFile(filePath), ".html");
         }
-        return resource;
+        return null;
     }
 
     private byte[] readFile(String filePath) {
@@ -83,17 +79,22 @@ public class HttpResponse {
         return null;
     }
 
-    private static String setDefaultPath(String filePath) {
-        if (filePath.equals("/")) { filePath = "/index.html"; }
+    private static String setIfDefaultPath(String filePath) {
+        if (filePath.equals("/")) { return "/index.html"; }
         return filePath;
     }
 
-    private String getResourceContentType(String resourcePath) {
-        if (resourcePath.endsWith(".html")) {
+    private String getResponseContentType(String format) {
+        if (format.isEmpty()) {
+            // 브라우저/모바일 분기
             return "text/html; charset=utf-8";
+        } else if (format.equals(".html")) {
+            return "text/html; charset=utf-8";
+        } else if (format.equals(".json")) {
+            return "application/json; charset=utf-8";
         }
 
-        return "application/json; charset=utf-8";
+        return "text/html; charset=utf-8"; //
     }
 
     private void responseHeader(DataOutputStream dos, ResponseMessage responseMessage, int lengthBody, String date) {
@@ -115,6 +116,24 @@ public class HttpResponse {
             dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
         } catch (IOException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    private static class Resource {
+        private final byte[] data;
+        private final String format;
+
+        public Resource(byte[] data, String format) {
+            this.data = data;
+            this.format = format;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+
+        public String getFormat() {
+            return format;
         }
     }
 }
