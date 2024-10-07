@@ -64,7 +64,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_null() {
+    void responseMessage_null() {
         // given
         RequestLine requestLine = null;
 
@@ -76,7 +76,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_get_root_200() {
+    void responseMessage_get_root_200() {
         // given
         String httpMethod = "GET";
         String path = "/";
@@ -90,7 +90,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_get_index_200() {
+    void responseMessage_get_index_200() {
         // given
         String httpMethod = "GET";
         String path = "/index.html";
@@ -104,7 +104,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_get_index_404() {
+    void responseMessage_get_index_404() {
         // given
         String httpMethod = "GET";
         String path = "/user";
@@ -118,7 +118,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_wrong_http_method_index_400() {
+    void responseMessage_wrong_http_method_index_400() {
         // given
         String httpMethod = "GE";
         String path = "/index.html";
@@ -132,7 +132,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_post_root_405() {
+    void responseMessage_post_root_405() {
         // given
         String httpMethod = "POST";
         String path = "/";
@@ -146,7 +146,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void validResponseMessage_post_index_405() {
+    void responseMessage_post_index_405() {
         // given
         String httpMethod = "POST";
         String path = "/index.html";

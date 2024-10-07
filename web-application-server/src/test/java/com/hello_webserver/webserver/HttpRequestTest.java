@@ -24,7 +24,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void validRequestLine_root() {
+    void requestLine_root() {
         // given
         String httpMethod = "GET";
         String resourcePath = "/";
@@ -39,7 +39,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void validRequestLine() {
+    void requestLine_index_html() {
 
         // given
         String httpMethod = "GET";
@@ -55,7 +55,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void invalidRequestLine_not_root_start() {
+    void requestLine_not_root_start() {
 
         // given
         String httpMethod = "GET";
