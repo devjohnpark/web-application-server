@@ -54,11 +54,10 @@ public class RequestHandler extends Thread {
                 return;
             }
 
-            // 헤더 읽기 후 유효성 확인 -> 요청 리소스 존재하는지 확인 -> 응답 메세지 생성 -> 응답 보내기
             RequestLine requestLine = httpRequest.readRequestHeader(line); // 헤더 읽기 후 유효성 확인
             ResponseMessage responseMessage = httpResponse.createResponse(requestLine); // 응답 메세지 생성
             DataOutputStream dos = new DataOutputStream(out);
-            httpResponse.sendResponse(dos, responseMessage); // 응답 보내기
+            httpResponse.sendResponse(dos, responseMessage, DateUtils.getCurrentDate()); // 응답 보내기
         } catch (IOException e) {
             log.error(e.getMessage());
         }

@@ -20,7 +20,7 @@ class HttpRequestTest {
 
     @BeforeEach
     void setUp() {
-        httpRequest = new HttpRequest("webapp");
+        httpRequest = new HttpRequest(WebServer.ROOT_PATH);
     }
 
     @Test
@@ -28,10 +28,10 @@ class HttpRequestTest {
         // given
         String httpMethod = "GET";
         String resourcePath = "/";
-        BufferedReader br = new BufferedReader(new StringReader(String.format("%s %s HTTP/1.1\r\n", httpMethod, resourcePath)));
+        String line = String.format("%s %s HTTP/1.1\r\n", httpMethod, resourcePath);
 
         // when
-        RequestLine requestLine = httpRequest.readRequestHeader(br);
+        RequestLine requestLine = httpRequest.readRequestHeader(line);
 
         // then
         assertThat(requestLine.getMethod()).isEqualTo(httpMethod);
@@ -44,10 +44,10 @@ class HttpRequestTest {
         // given
         String httpMethod = "GET";
         String resourcePath = "/index.html";
-        BufferedReader br = new BufferedReader(new StringReader(String.format("%s %s HTTP/1.1\r\n", httpMethod, resourcePath)));
+        String line = String.format("%s %s HTTP/1.1\r\n", httpMethod, resourcePath);
 
         // when
-        RequestLine requestLine = httpRequest.readRequestHeader(br);
+        RequestLine requestLine = httpRequest.readRequestHeader(line);
 
         // then
         assertThat(requestLine.getMethod()).isEqualTo(httpMethod);
@@ -60,10 +60,10 @@ class HttpRequestTest {
         // given
         String httpMethod = "GET";
         String resourcePath = "user";
-        BufferedReader br = new BufferedReader(new StringReader(String.format("%s %s HTTP/1.1\r\n", httpMethod, resourcePath)));
+        String line = String.format("%s %s HTTP/1.1\r\n", httpMethod, resourcePath);
 
         // when
-        RequestLine requestLine = httpRequest.readRequestHeader(br);
+        RequestLine requestLine = httpRequest.readRequestHeader(line);
 
         // then
         assertThat(requestLine).isEqualTo(null);

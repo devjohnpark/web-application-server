@@ -55,8 +55,8 @@ public class HttpResponse {
         return "GET".equals(requestLine.getMethod());
     }
 
-    public void sendResponse(DataOutputStream dos, ResponseMessage responseMessage) {
-        responseHeader(dos, responseMessage, responseMessage.getBody().length);
+    public void sendResponse(DataOutputStream dos, ResponseMessage responseMessage, String date) {
+        responseHeader(dos, responseMessage, responseMessage.getBody().length, date);
         responseBody(dos, responseMessage.getBody());
     }
 
@@ -96,11 +96,11 @@ public class HttpResponse {
         return "application/json; charset=utf-8";
     }
 
-    private void responseHeader(DataOutputStream dos, ResponseMessage responseMessage, int lengthBody) {
+    private void responseHeader(DataOutputStream dos, ResponseMessage responseMessage, int lengthBody, String date) {
         try {
             // HTTP 메세지에서 문자열 줄끝을 구분하기 위해 '\r\n'을 사용
             dos.writeBytes(String.format("HTTP/1.1 %d %s\r\n", responseMessage.getStatus().getCode(), responseMessage.getStatus().getMessage()));
-            dos.writeBytes(String.format("Date: %s\r\n", DateUtils.getCurrentDate()));
+            dos.writeBytes(String.format("Date: %s\r\n", date));
             dos.writeBytes(String.format("Content-Type: %s\r\n", responseMessage.getContentType()));
             dos.writeBytes(String.format( "Content-Length: %d\r\n", lengthBody));
             dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
