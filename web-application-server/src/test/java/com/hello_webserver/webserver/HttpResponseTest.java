@@ -1,5 +1,6 @@
 package com.hello_webserver.webserver;
 
+import com.hello_webserver.request.HttpRequest;
 import com.hello_webserver.request.RequestLine;
 import com.hello_webserver.response.HttpResponse;
 import com.hello_webserver.response.HttpStatus;
@@ -25,36 +26,37 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 // GET /user HTTP/1.0 -> 404
 // POST / HTTP/1.0 -> 405
 // POST /index.html HTTP/1.0 -> 405
+
+// sendResponse: 응답을 보내는 데이터 형태가 맞는지 확인
 class HttpResponseTest {
     private HttpResponse httpResponse;
 
     @BeforeEach
     void setUp() {
         httpResponse = new HttpResponse(WebServer.ROOT_PATH);
-
     }
 
     @Test
     void sendResponse() throws IOException {
         // Given
         String content = "Hello World";
-        String date = DateUtils.getCurrentDate();
         String contentType = "text/html; charset=utf-8";
-        int lengthBody = content.length();
-        byte[] body = content.getBytes(StandardCharsets.UTF_8);
-        ResponseMessage responseMessage = new ResponseMessage(HttpStatus.OK, body, contentType);
+        HttpStatus httpStatus = HttpStatus.OK;
+        String date = DateUtils.getCurrentDate();
+        ResponseMessage responseMessage = new ResponseMessage(httpStatus, content.getBytes(), contentType, date);
+
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); // 출력한 데이터 버퍼에서 가져오기 위해서 사용
              DataOutputStream dos = new DataOutputStream(baos);) {
 
             // When
-            httpResponse.sendResponse(dos, responseMessage, date);
+            httpResponse.sendResponse(dos, responseMessage);
 
             // Then
             String actualResponse = baos.toString(StandardCharsets.UTF_8);
-            assertTrue(actualResponse.startsWith(String.format("HTTP/1.1 %d %s", responseMessage.getStatus().getCode(), responseMessage.getStatus().getMessage())));
+            assertTrue(actualResponse.startsWith(String.format("HTTP/1.1 %d %s", httpStatus.getCode(), httpStatus.getMessage())));
             assertTrue(actualResponse.contains(String.format("Date: %s", date)));
-            assertTrue(actualResponse.contains(String.format("Content-Type: %s", responseMessage.getContentType())));
-            assertTrue(actualResponse.contains(String.format("Content-Length: %d", lengthBody)));
+            assertTrue(actualResponse.contains(String.format("Content-Type: %s", contentType)));
+            assertTrue(actualResponse.contains(String.format("Content-Length: %d", content.length())));
             assertTrue(actualResponse.endsWith("\r\n\r\n" + content));
         } catch (IOException e) {
             throw new IOException(e);

@@ -7,11 +7,7 @@ import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// 클라이언트 요청 읽기(HttpRequest)
-// 1. HTTP 요청 메세지의 헤더를 읽는다.
-//      1. 헤더에서 HTTP Method가 유효한지 확인
-//      2. 헤더에서 Resource의 경로가 유효한지 확인
-// 2. HTTP 요청 메세지의 바디를 읽는다.
+// 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final String webAppDir;
