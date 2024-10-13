@@ -1,31 +1,31 @@
 package com.hello_webserver.webserver;
 
-import com.hello_webserver.request.HttpRequest;
-import com.hello_webserver.request.RequestLine;
-import com.hello_webserver.response.HttpResponse;
-import com.hello_webserver.response.ResponseMessage;
+import com.hello_webserver.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.DateUtils;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 // RequsetHandler
 // 사용자 요청을 처리하는 스레드로 응답을 처리한다.
 // HTTP Message의 header에 응답 status 상태와 body에 Hello World!를 저장해서 응답한다.
 // 이때, Java의 I/O 스트림을 사용해서 소켓을 통해 데이터 송수신한다.
 // 클라이언트와 연결된 소켓을 닫기 (커널 영역에 할당된 I/O 자원을 해제)
+
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connectedSocket;
-    private final HttpRequest httpRequest;
-    private final HttpResponse httpResponse;
+//    public static Map<OutputStream, HTTPVersion> outputSocketMonitor = new ConcurrentHashMap<>();
+    private final HttpProcessor httpProcessor;
+    // 소켓 상태 저장
 
-    public RequestHandler(Socket connectedSocket, HttpRequest httpRequest, HttpResponse httpResponse) {
+
+    public RequestHandler(Socket connectedSocket, HttpProcessor httpProcessor) {
         this.connectedSocket = connectedSocket;
-        this.httpRequest = httpRequest;
-        this.httpResponse = httpResponse;
+        this.httpProcessor = httpProcessor;
     }
 
     // 1. 클라이언트 요청 헤더에서 HTTP Method과 리소스 경로 확인
@@ -47,21 +47,10 @@ public class RequestHandler extends Thread {
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
         ) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line = br.readLine();
-            log.debug("Request Line: {}", line);
-            if (line == null) {
-                return;
-            }
-
-            RequestLine requestLine = httpRequest.readRequestHeader(line); // 헤더 읽기 후 유효성 확인
-            ResponseMessage responseMessage = httpResponse.createResponse(requestLine); // 응답 메세지 생성
-            DataOutputStream dos = new DataOutputStream(out);
-            httpResponse.sendResponse(dos, responseMessage); // 응답 보내기
+            httpProcessor.process(new HttpRequest(in), new HttpResponse(out));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
-
 }
 
