@@ -4,7 +4,7 @@ import com.hello_webserver.webresources.Resource;
 import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.DateUtils;
+import util.HttpDateFormat;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.io.OutputStream;
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final DataOutputStream dos;
+//    private final Map<String, String> headers;
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
@@ -41,11 +42,11 @@ public class HttpResponse {
     }
 
     private Response createResponse(Resource resource) {
-        return new Response(HttpStatus.OK, resource.getData(), getResponseContentType(resource.getFormat()), DateUtils.getCurrentDate());
+        return new Response(HttpStatus.OK, resource.getData(), getResponseContentType(resource.getFormat()), HttpDateFormat.getCurrentDate());
     }
 
     private Response createErrorResponse(HttpStatus status, String content) {
-        return new Response(status, content.getBytes(), getResponseContentType(""), DateUtils.getCurrentDate());
+        return new Response(status, content.getBytes(), getResponseContentType(""), HttpDateFormat.getCurrentDate());
     }
 
     private String getResponseContentType(String format) {

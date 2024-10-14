@@ -15,28 +15,22 @@ public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private RequestLine requestLine = null;
 
+
     public HttpRequest(InputStream in) {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line = br.readLine();
-            if (line == null) {
-                throw new IllegalStateException("Request line is null");
-            }
-            requestLine = createRequestLine(line);
+            requestLine = RequestLine.createRequestline(readRequestLine(br));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    private RequestLine createRequestLine(String requestLine) {
-        String[] tokens = requestLine.split(" ");
-        if (tokens.length < 3) {
-            throw new IllegalStateException("Not enough request line parameters");
+    private String readRequestLine(BufferedReader br) throws IOException {
+        String line = br.readLine();
+        if (line == null) {
+            throw new IllegalStateException("Request line is null");
         }
-        String method = tokens[0];
-        String path = tokens[1];
-        String protocol = tokens[2];
-        return new RequestLine(HttpMethod.fromString(method), path, HttpProtocol.fromString(protocol));
+        return line;
     }
 
     public String getPath() {

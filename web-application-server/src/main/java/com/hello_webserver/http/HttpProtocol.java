@@ -30,7 +30,7 @@ public enum HttpProtocol {
     public static HttpProtocol fromString(String protocol) {
         HttpProtocol httpProtocol = stringToEnum.get(protocol);
         if (httpProtocol == null) {
-            throw new IllegalStateException("Unknown HTTP Protocol: " + protocol);
+            throw new IllegalArgumentException("Unknown HTTP Protocol: " + protocol);
         }
         return httpProtocol;
     }

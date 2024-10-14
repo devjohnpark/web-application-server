@@ -6,7 +6,7 @@
 //import com.hello_webserver.http.Response;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
-//import util.DateUtils;
+//import util.HttpDateFormat;
 //
 //import java.io.ByteArrayOutputStream;
 //import java.io.DataOutputStream;
@@ -41,7 +41,7 @@
 //        String content = "Hello World";
 //        String contentType = "text/html; charset=utf-8";
 //        HttpStatus httpStatus = HttpStatus.OK;
-//        String date = DateUtils.getCurrentDate();
+//        String date = HttpDateFormat.getCurrentDate();
 //        Response response = new Response(httpStatus, content.getBytes(), contentType, date);
 //
 //        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); // 출력한 데이터 버퍼에서 가져오기 위해서 사용

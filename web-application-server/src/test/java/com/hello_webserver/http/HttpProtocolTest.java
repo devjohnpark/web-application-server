@@ -14,8 +14,8 @@ class HttpProtocolTest {
     }
 
     @Test
-    void httpProtocol_exception() {
-        assertThrows(IllegalArgumentException.class, () -> HttpProtocol.valueOf("HTTP/1.2"));
+    void protocol_exception() {
+        assertThrows(IllegalArgumentException.class, () -> HttpProtocol.fromString("HTTP/1.2"));
     }
 
 }
