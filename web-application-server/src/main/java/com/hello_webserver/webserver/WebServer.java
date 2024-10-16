@@ -1,7 +1,6 @@
 package com.hello_webserver.webserver;
 
 import com.hello_webserver.http.HttpApiMapper;
-import com.hello_webserver.http.HttpProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +29,16 @@ public class WebServer {
             log.debug("Web Application Server started {} port.", port);
             Socket estabalishedSocket;
             // accept(): 클라이언트와 연결 요청을 할때까지 block 되고 연결 요청 수락시 새로운 소켓을 생성, 따라서 acceptedSocket은 null 값이 될수 없음
-            while ((estabalishedSocket = listenSocket.accept()) != null) {
-                HttpProcessor httpProcessor = new HttpProcessor(new HttpApiMapper(rootPath));
-                RequestHandler requestHandler = new RequestHandler(estabalishedSocket, httpProcessor);
-                requestHandler.start();
-            }
+            connect(listenSocket, rootPath);
+        }
+    }
+
+    private static void connect(ServerSocket listenSocket, String rootPath) throws IOException {
+        Socket estabalishedSocket;
+        while ((estabalishedSocket = listenSocket.accept()) != null) {
+            estabalishedSocket.setKeepAlive(true);
+            RequestHandler requestHandler = new RequestHandler(estabalishedSocket, new HttpApiMapper(rootPath));
+            requestHandler.start();
         }
     }
 }

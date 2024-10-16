@@ -17,7 +17,7 @@ public enum HttpMethod {
     public static HttpMethod fromString(String method) {
         HttpMethod httpMethod = stringToEnum.get(method.toUpperCase());
         if (httpMethod == null) {
-            throw new IllegalArgumentException("Unknown HTTP Method: " + method);
+            throw new IllegalArgumentException();
         }
         return httpMethod;
     }

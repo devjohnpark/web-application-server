@@ -10,7 +10,7 @@ import java.util.Map;
 // ?: resource와 query string 간의 분리
 // &: query parameter 간의 분리
 // =: key, value 간의 분리
-public class HttpParser {
+public class HttpRequestParser {
     public static Map<String, String> parseQueryString(String queryString) {
         return parseValues(queryString, "&");
     }
@@ -25,7 +25,7 @@ public class HttpParser {
     private static Map<String, String> parseParameters(String[] parameters) {
         Map<String, String> map = new HashMap<>();
         for (String parameter : parameters) {
-            Pair pair = getKeyValue(parameter, "=");
+            Pair pair = getKeyValue(parameter, "="); // not null
             if (pair != null) {
                 map.put(pair.key, pair.value);
             }
@@ -35,10 +35,7 @@ public class HttpParser {
 
     public static Pair parseUrl(String url) {
         Pair pair = getKeyValue(url, "\\?");
-        if (pair != null) {
-            return new Pair(pair.key, pair.value);
-        }
-        return new Pair(url, ""); // path, query string
+        return setEmptyValue(url, pair);
     }
 
     // key: can't be empty, value: can be empty
@@ -57,8 +54,25 @@ public class HttpParser {
     }
 
     public static Pair parseHeader(String header) {
-        return getKeyValue(header, ": ");
+        Pair pair = getKeyValue(header, ": ");
+        return setEmptyValue(header, pair);
+    }
+
+    private static Pair setEmptyValue(String header, Pair pair) {
+        if (pair != null) {
+            return new Pair(pair.key, pair.value);
+        }
+        return new Pair(header, "");
+    }
+
+    public static String[] parseRequestLine(String requestLine) {
+        String[] tokens = requestLine.split(" ");
+        if (tokens.length != 3) {
+            throw new IllegalArgumentException();
+        }
+        return tokens;
     }
 
     public record Pair(String key, String value) {}
 }
+

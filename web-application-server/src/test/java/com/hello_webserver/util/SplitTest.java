@@ -8,7 +8,7 @@ public class SplitTest {
     @Test
     void split_empty() {
         String str = "";
-        String[] tokens = str.split("=");
+        String[] tokens = str.split("");
         assertThat(tokens.length).isEqualTo(1);
         assertThat(tokens[0]).isEqualTo("");
     }

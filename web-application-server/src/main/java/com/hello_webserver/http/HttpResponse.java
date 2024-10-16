@@ -14,7 +14,6 @@ import java.io.OutputStream;
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final DataOutputStream dos;
-//    private final Map<String, String> headers;
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);

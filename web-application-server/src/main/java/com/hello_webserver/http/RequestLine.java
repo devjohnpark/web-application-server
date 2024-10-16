@@ -1,6 +1,6 @@
 package com.hello_webserver.http;
 
-import util.HttpParser;
+import util.HttpRequestParser;
 
 import java.util.Map;
 
@@ -19,27 +19,19 @@ public class RequestLine {
         this.protocol = protocol;
     }
 
-    public static RequestLine createRequestline(String requestLine) {
-        String[] tokens = tokenizeRequestLine(requestLine);
+    public static RequestLine createFromRequestLine(String requestLine) {
+        String[] tokens = HttpRequestParser.parseRequestLine(requestLine);
         HttpMethod method = HttpMethod.fromString(tokens[0]);
         UrlComponents urlComponents = getUrlComponents(tokens[1]);
         HttpProtocol protocol = HttpProtocol.fromString(tokens[2]);
         return new RequestLine(method, urlComponents.path, urlComponents.queryString, urlComponents.parameters, protocol);
     }
 
-    private static String[] tokenizeRequestLine(String requestLine) {
-        String[] tokens = requestLine.split(" ");
-        if (tokens.length != 3) {
-            throw new IllegalStateException();
-        }
-        return tokens;
-    }
-
     private static UrlComponents getUrlComponents(String url) {
-        HttpParser.Pair pair = HttpParser.parseUrl(url);
+        HttpRequestParser.Pair pair = HttpRequestParser.parseUrl(url);
         String path = pair.key();
         String queryString = pair.value();
-        Map<String, String> parameters = HttpParser.parseQueryString(queryString);
+        Map<String, String> parameters = HttpRequestParser.parseQueryString(queryString);
         return new UrlComponents(path, queryString, parameters);
     }
 

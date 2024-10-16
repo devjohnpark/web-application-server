@@ -42,7 +42,7 @@ public class AbstractHttpApiHandler implements HttpApiHandler {
 
     private void sendDefaultError(HttpRequest request, HttpResponse response) {
         HttpProtocol protocol = request.getProtocol();
-        if (!protocol.equals(HttpProtocol.HTTP_1_1)) {
+        if (protocol.equals(HttpProtocol.HTTP_0_9) || protocol.equals(HttpProtocol.HTTP_1_0)) {
             response.sendError(HttpStatus.METHOD_NOT_ALLOWED);
         } else {
             response.sendError(HttpStatus.BAD_REQUEST);
