@@ -68,7 +68,7 @@ public class HttpRequestParser {
     public static String[] parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
         if (tokens.length != 3) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException();
         }
         return tokens;
     }

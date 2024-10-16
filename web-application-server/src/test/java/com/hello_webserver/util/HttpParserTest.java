@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpParserTest {
 
-    @Test
+    @Tes
     void parseQueryString_correct_input() {
         String queryString = "userId=john&password=1234&name=john park";
 
@@ -142,10 +142,50 @@ class HttpParserTest {
         String url = "/";
 
         // when
-        HttpRequestParser.Pair acutal = HttpRequestParser.parseUrl(url);
+        HttpRequestParser.Pair actual = HttpRequestParser.parseUrl(url);
 
         // then
         HttpRequestParser.Pair expected = new HttpRequestParser.Pair("/", "");
-        assertThat(acutal).isEqualTo(expected);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void parseHeader_correct_input() {
+        String header = "Host: www.example.com";
+
+        HttpRequestParser.Pair actual = HttpRequestParser.parseHeader(header);
+
+        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("Host", "www.example.com");
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void parseHeader_non_value() {
+        String header = "Host";
+
+        HttpRequestParser.Pair actual = HttpRequestParser.parseHeader(header);
+
+        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("Host", "");
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void parseRequestLine_correct_input() {
+        String requestLine = "GET / HTTP/1.1";
+
+        String[] tokens = HttpRequestParser.parseRequestLine(requestLine);
+
+        String[] expected = new String[]{"GET", "/", "HTTP/1.1"};
+
+        assertThat(tokens).isEqualTo(expected);
+    }
+
+    @Test
+    void parseRequestLine_incorrect_input() {
+        String requestLine = "GET / ";
+
+        assertThrows(IllegalStateException.class, () -> HttpRequestParser.parseRequestLine(requestLine));
     }
 }
