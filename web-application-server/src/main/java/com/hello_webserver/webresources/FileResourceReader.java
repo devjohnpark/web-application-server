@@ -8,23 +8,48 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class FileResourceReader implements ResourceReader {
+public class FileResourceReader implements WebResourceReader {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
 
-    // 각 리소스 포맷마다 FileResourceReader 필요
+    private enum FileType {
+        HTML(".html"),
+        JS(".js"),
+        CSS(".css"),
+        PNG(".png"),
+        JPEG(".jpeg");
+
+        private final String extension;
+
+        FileType(String extension) {
+            this.extension = extension;
+        }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public static FileType fromFilePath(String filePath) {
+            for (FileType fileType : values()) {
+                if (filePath.endsWith(fileType.getExtension())) {
+                    return fileType;
+                }
+            }
+            return null; // 파일 형식이 일치하지 않으면 null 반환
+        }
+    }
+
     public Resource readResource(String filePath) {
-        if (filePath.endsWith(".html")) {
-            return new Resource(readFile(filePath), ".html");
-        } else if (filePath.endsWith(".js")) {
-            return new Resource(readFile(filePath), ".js");
-        } else if (filePath.endsWith(".css")) {
-            return new Resource(readFile(filePath), ".css");
-        } else if (filePath.endsWith(".png")) {
-            return new Resource(readFile(filePath), ".png");
-        } else if (filePath.endsWith(".jpeg")) {
-            return new Resource(readFile(filePath), ".jpg");
-        } else if (filePath.endsWith(".jpg")) {
-            return new Resource(readFile(filePath), ".jpg");
+        FileType fileType = FileType.fromFilePath(filePath);
+        if (fileType != null) {
+            return getResource(filePath, fileType.getExtension());
+        }
+        return null;
+    }
+
+    private Resource getResource(String filePath, String fileExtension) {
+        byte[] content = readFile(filePath);
+        if (content != null) {
+            return new Resource(content, fileExtension);
         }
         return null;
     }
@@ -34,7 +59,7 @@ public class FileResourceReader implements ResourceReader {
             return Files.readAllBytes(Paths.get(filePath));
         } catch (IOException e) {
             log.debug(e.getMessage());
+            return null;
         }
-        return null;
     }
 }

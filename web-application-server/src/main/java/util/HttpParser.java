@@ -10,7 +10,7 @@ import java.util.Map;
 // ?: resource와 query string 간의 분리
 // &: query parameter 간의 분리
 // =: key, value 간의 분리
-public class HttpRequestParser {
+public class HttpParser {
     public static Map<String, String> parseQueryString(String queryString) {
         return parseValues(queryString, "&");
     }

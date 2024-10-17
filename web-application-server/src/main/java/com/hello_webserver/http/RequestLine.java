@@ -1,6 +1,6 @@
 package com.hello_webserver.http;
 
-import util.HttpRequestParser;
+import util.HttpParser;
 
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class RequestLine {
     }
 
     public static RequestLine createFromRequestLine(String requestLine) {
-        String[] tokens = HttpRequestParser.parseRequestLine(requestLine);
+        String[] tokens = HttpParser.parseRequestLine(requestLine);
         HttpMethod method = HttpMethod.fromString(tokens[0]);
         UrlComponents urlComponents = getUrlComponents(tokens[1]);
         HttpProtocol protocol = HttpProtocol.fromString(tokens[2]);
@@ -28,10 +28,10 @@ public class RequestLine {
     }
 
     private static UrlComponents getUrlComponents(String url) {
-        HttpRequestParser.Pair pair = HttpRequestParser.parseUrl(url);
+        HttpParser.Pair pair = HttpParser.parseUrl(url);
         String path = pair.key();
         String queryString = pair.value();
-        Map<String, String> parameters = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> parameters = HttpParser.parseQueryString(queryString);
         return new UrlComponents(path, queryString, parameters);
     }
 

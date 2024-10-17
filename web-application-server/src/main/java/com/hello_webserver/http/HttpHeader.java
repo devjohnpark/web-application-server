@@ -1,9 +1,7 @@
 package com.hello_webserver.http;
 
-import util.HttpRequestParser;
+import util.HttpParser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +41,16 @@ Not Incude Content-Length -> 411 Length Required
 
 
 public class HttpHeader {
-    // Content-Type ()
+    // Content-Type
     // Keep-Alive
     // Cookie
+    // Content-Length
     private Map<String, String> headers = new HashMap<>();
 
 
-    public void addHeader(String key, String value) {
-        headers.put(key, value);
+    public void addHeader(String header) {
+        HttpParser.Pair pair = HttpParser.parseHeader(header);
+        headers.put(pair.key(), pair.value());
     }
 
     public Map<String, String> getHeaders() {

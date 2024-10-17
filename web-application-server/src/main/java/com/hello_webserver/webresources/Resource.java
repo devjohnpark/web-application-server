@@ -9,12 +9,11 @@ public class Resource {
         this.format = format;
     }
 
-    public byte[] getData() {
+    protected byte[] getData() {
         return data;
     }
 
-    public String getFormat() {
+    protected String getFormat() {
         return format;
     }
-
 }

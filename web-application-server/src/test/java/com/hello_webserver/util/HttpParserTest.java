@@ -1,7 +1,7 @@
 package com.hello_webserver.util;
 
 import org.junit.jupiter.api.Test;
-import util.HttpRequestParser;
+import util.HttpParser;
 
 import java.util.Map;
 
@@ -9,8 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpParserTest {
-
-    @Tes
     void parseQueryString_correct_input() {
         String queryString = "userId=john&password=1234&name=john park";
 
@@ -20,7 +18,7 @@ class HttpParserTest {
                 "name", "john park"
         );
 
-        Map<String, String> result = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> result = HttpParser.parseQueryString(queryString);
 
         assertEquals(expected, result);
     }
@@ -35,7 +33,7 @@ class HttpParserTest {
                 "name", "john park"
         );
 
-        Map<String, String> result = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> result = HttpParser.parseQueryString(queryString);
 
         assertEquals(expected, result);
     }
@@ -49,7 +47,7 @@ class HttpParserTest {
                 "name", "john park"
         );
 
-        Map<String, String> result = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> result = HttpParser.parseQueryString(queryString);
 
         assertEquals(expected, result);
     }
@@ -63,7 +61,7 @@ class HttpParserTest {
                 "name", "john park"
         );
 
-        Map<String, String> result = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> result = HttpParser.parseQueryString(queryString);
 
         assertEquals(expected, result);
     }
@@ -77,7 +75,7 @@ class HttpParserTest {
                 "password", "1234"
         );
 
-        Map<String, String> actual = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> actual = HttpParser.parseQueryString(queryString);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -92,7 +90,7 @@ class HttpParserTest {
                 "name", ""
         );
 
-        Map<String, String> actual = HttpRequestParser.parseQueryString(queryString);
+        Map<String, String> actual = HttpParser.parseQueryString(queryString);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -103,10 +101,10 @@ class HttpParserTest {
         String url = "/user/create?key=value";
 
         // when
-        HttpRequestParser.Pair actual = HttpRequestParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("/user/create", "key=value");
+        HttpParser.Pair expected = new HttpParser.Pair("/user/create", "key=value");
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -116,10 +114,10 @@ class HttpParserTest {
         String url = "key??value";
 
         // when
-        HttpRequestParser.Pair actual = HttpRequestParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("key??value", "");;
+        HttpParser.Pair expected = new HttpParser.Pair("key??value", "");;
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -129,10 +127,10 @@ class HttpParserTest {
         String url = "/user/crea te?ke y=val ue";
 
         // when
-        HttpRequestParser.Pair actual = HttpRequestParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("/user/crea te", "ke y=val ue");
+        HttpParser.Pair expected = new HttpParser.Pair("/user/crea te", "ke y=val ue");
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -142,10 +140,10 @@ class HttpParserTest {
         String url = "/";
 
         // when
-        HttpRequestParser.Pair actual = HttpRequestParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("/", "");
+        HttpParser.Pair expected = new HttpParser.Pair("/", "");
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -153,9 +151,9 @@ class HttpParserTest {
     void parseHeader_correct_input() {
         String header = "Host: www.example.com";
 
-        HttpRequestParser.Pair actual = HttpRequestParser.parseHeader(header);
+        HttpParser.Pair actual = HttpParser.parseHeader(header);
 
-        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("Host", "www.example.com");
+        HttpParser.Pair expected = new HttpParser.Pair("Host", "www.example.com");
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -164,9 +162,9 @@ class HttpParserTest {
     void parseHeader_non_value() {
         String header = "Host";
 
-        HttpRequestParser.Pair actual = HttpRequestParser.parseHeader(header);
+        HttpParser.Pair actual = HttpParser.parseHeader(header);
 
-        HttpRequestParser.Pair expected = new HttpRequestParser.Pair("Host", "");
+        HttpParser.Pair expected = new HttpParser.Pair("Host", "");
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -175,7 +173,7 @@ class HttpParserTest {
     void parseRequestLine_correct_input() {
         String requestLine = "GET / HTTP/1.1";
 
-        String[] tokens = HttpRequestParser.parseRequestLine(requestLine);
+        String[] tokens = HttpParser.parseRequestLine(requestLine);
 
         String[] expected = new String[]{"GET", "/", "HTTP/1.1"};
 
@@ -186,6 +184,6 @@ class HttpParserTest {
     void parseRequestLine_incorrect_input() {
         String requestLine = "GET / ";
 
-        assertThrows(IllegalStateException.class, () -> HttpRequestParser.parseRequestLine(requestLine));
+        assertThrows(IllegalStateException.class, () -> HttpParser.parseRequestLine(requestLine));
     }
 }

@@ -5,7 +5,6 @@ import java.io.*;
 import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpRequestParser;
 
 
 // 클라이언트 요청 데이터 처리 (HttpRequest)
@@ -26,6 +25,7 @@ public class HttpRequest {
 
     private RequestLine createRequestLine(BufferedReader br) throws IOException {
         String line = br.readLine();
+        log.debug("RequestLine: {}", line);
         if (line == null) {
             throw new IllegalStateException();
         }
@@ -34,11 +34,9 @@ public class HttpRequest {
 
     private HttpHeader createHeader(BufferedReader br) throws IOException {
         HttpHeader httpHeader = new HttpHeader();
-        HttpRequestParser.Pair pair;
         String line = br.readLine();
         while (!line.isEmpty()) {
-            pair = HttpRequestParser.parseHeader(line);
-            httpHeader.addHeader(pair.key(), pair.value());
+            httpHeader.addHeader(line);
             line = br.readLine();
         }
         return httpHeader;

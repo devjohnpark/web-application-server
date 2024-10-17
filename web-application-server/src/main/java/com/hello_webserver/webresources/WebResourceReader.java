@@ -1,5 +1,5 @@
 package com.hello_webserver.webresources;
 
-public interface ResourceReader {
+public interface WebResourceReader {
     Resource readResource(String filePath);
 }

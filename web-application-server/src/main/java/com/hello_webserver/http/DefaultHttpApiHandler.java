@@ -1,17 +1,16 @@
 package com.hello_webserver.http;
 
 import com.hello_webserver.webresources.Resource;
-import com.hello_webserver.webresources.ResourceHandler;
+import com.hello_webserver.webresources.WebResourceHandler;
 import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
+    private final WebResourceHandler resourceHandler;
 
-    ResourceHandler resourceHandler;
-
-    public DefaultHttpApiHandler(ResourceHandler resourceHandler) {
+    public DefaultHttpApiHandler(WebResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
     }
 
@@ -25,6 +24,12 @@ public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
     }
 
     public void doGet(HttpRequest request, HttpResponse response) {
-        response.sendResource(resourceHandler.getResource(request.getPath()));
+//        response.sendResource(resourceHandler.getResource(request.getPath()));
+        Resource resource = resourceHandler.getResource(request.getPath());
+        if (resource == null) {
+            response.sendError(HttpStatus.NOT_FOUND);
+        } else {
+            response.sendResource(resource);
+        }
     }
 }
