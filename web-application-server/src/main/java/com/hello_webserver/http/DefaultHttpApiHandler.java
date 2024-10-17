@@ -24,9 +24,8 @@ public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
     }
 
     public void doGet(HttpRequest request, HttpResponse response) {
-//        response.sendResource(resourceHandler.getResource(request.getPath()));
         Resource resource = resourceHandler.getResource(request.getPath());
-        if (resource == null) {
+        if (resource.isEmpty()) {
             response.sendError(HttpStatus.NOT_FOUND);
         } else {
             response.sendResource(resource);

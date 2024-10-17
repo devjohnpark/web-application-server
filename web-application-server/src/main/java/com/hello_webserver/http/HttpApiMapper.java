@@ -22,7 +22,7 @@ public class HttpApiMapper {
         // url에 맵핑된 http method 요청 조회하고 없으면 DefaultHttpApiHandler 반환
         HttpApiHandler httpApiHandler = httpApiHandlers.get(path);
         if (httpApiHandler == null) {
-            httpApiHandler = new DefaultHttpApiHandler(new WebResourceHandler(webAppDir, path));
+            httpApiHandler = new DefaultHttpApiHandler(new WebResourceHandler(webAppDir));
         }
         return httpApiHandler;
     }

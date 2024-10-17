@@ -11,16 +11,15 @@ public class WebResourceHandler {
         this.webAppDir = webAppDir;
     }
 
-    // Nullable
     public Resource getResource(String path) {
-        String resourcePath = webAppDir + path;
-        if (isExistResourceReader(resourcePath)) {
+        String resourcePath = webAppDir + setIfRootPath(path);
+        if (isExistReader(resourcePath)) {
             return reader.readResource(resourcePath);
         }
-        return null;
+        return new Resource();
     }
 
-    private boolean isExistResourceReader(String resourcePath) {
+    private boolean isExistReader(String resourcePath) {
         if (isFile(resourcePath)) {
             reader = new FileResourceReader();
         }
@@ -28,8 +27,7 @@ public class WebResourceHandler {
     }
 
     private boolean isFile(String filePath) {
-        String resourcePath = webAppDir + filePath;
-        return Files.exists(Path.of(resourcePath));
+        return Files.exists(Path.of(filePath));
     }
 
     private String setIfRootPath(String filePath) {

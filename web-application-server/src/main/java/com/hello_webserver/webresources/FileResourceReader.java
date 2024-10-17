@@ -34,22 +34,14 @@ public class FileResourceReader implements WebResourceReader {
                     return fileType;
                 }
             }
-            return null; // 파일 형식이 일치하지 않으면 null 반환
+            return null;
         }
     }
 
     public Resource readResource(String filePath) {
         FileType fileType = FileType.fromFilePath(filePath);
         if (fileType != null) {
-            return getResource(filePath, fileType.getExtension());
-        }
-        return null;
-    }
-
-    private Resource getResource(String filePath, String fileExtension) {
-        byte[] content = readFile(filePath);
-        if (content != null) {
-            return new Resource(content, fileExtension);
+            return new Resource(readFile(filePath), fileType.getExtension());
         }
         return null;
     }
@@ -59,7 +51,7 @@ public class FileResourceReader implements WebResourceReader {
             return Files.readAllBytes(Paths.get(filePath));
         } catch (IOException e) {
             log.debug(e.getMessage());
-            return null;
         }
+        return null;
     }
 }
