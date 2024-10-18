@@ -45,8 +45,7 @@ public class HttpHeader {
     // Keep-Alive
     // Cookie
     // Content-Length
-    private Map<String, String> headers = new HashMap<>();
-
+    private final Map<String, String> headers = new HashMap<>();
 
     public void addHeader(String header) {
         HttpParser.Pair pair = HttpParser.parseHeader(header);

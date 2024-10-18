@@ -25,7 +25,6 @@ public class HttpRequest {
 
     private RequestLine createRequestLine(BufferedReader br) throws IOException {
         String line = br.readLine();
-        log.debug("RequestLine: {}", line);
         if (line == null) {
             throw new IllegalStateException();
         }

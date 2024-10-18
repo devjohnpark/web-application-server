@@ -36,12 +36,29 @@ import java.io.OutputStream;
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final DataOutputStream dos;
-    private Response response;
+    // Response에 한번에 저장할 것인가? HttpResponse에 각 필드별로 set할것인가?
+    private HttpStatus status = HttpStatus.OK;
+    private byte[] body;
+    private String contentType;
+    private String date;
     private HttpHeader headers;
+
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
     }
+
+//    public void setStatus(HttpStatus status) {
+//        this.status = status;
+//    }
+//
+//    public void setContentType(String contentType) {
+//        this.contentType = contentType;
+//    }
+//
+//    public void setDate(String date) {
+//        this.date = date;
+//    }
 
     private void sendResponse(Response response) {
         responseHeader(response, response.getBody().length);
@@ -65,24 +82,26 @@ public class HttpResponse {
     }
 
     private Response createResponse(Resource resource) {
-        return new Response(HttpStatus.OK, resource.getData(), getResponseContentType(resource.getFormat()), HttpDateFormatter.getCurrentDate());
+        return new Response(HttpStatus.OK, resource.getData(), resource.getContentType(), HttpDateFormatter.getCurrentDate());
     }
 
     private Response createErrorResponse(HttpStatus status, String content) {
-        return new Response(status, content.getBytes(), getResponseContentType(""), HttpDateFormatter.getCurrentDate());
+        // error는 초기값 설정 (에러마다 페이지 만들자.)
+        return new Response(status, content.getBytes(), "text/html; charset=UTF-8", HttpDateFormatter.getCurrentDate());
     }
 
     private String getResponseContentType(String format) {
-        if (format.isEmpty()) {
-            // 브라우저/모바일 분기 필요
-            return "text/html; charset=UTF-8";
-        } else if (format.equals(".html")) {
-            return "text/html; charset=UTF-8";
-        } else if (format.equals(".json")) {
-            return "application/json; charset=UTF-8";
-        }
+//        if (format.isEmpty()) {
+//            // 브라우저/모바일 분기 필요
+//            return "text/html; charset=UTF-8";
+//        } else if (format.equals(".html")) {
+//            return "text/html; charset=UTF-8";
+//        } else if (format.equals(".json")) {
+//            return "application/json; charset=UTF-8";
+//        }
 
-        return "text/plain; charset=UTF-8";
+//        return "text/plain; charset=UTF-8";
+        return format;
     }
 
     private void responseHeader(Response response, int lengthBody) {
