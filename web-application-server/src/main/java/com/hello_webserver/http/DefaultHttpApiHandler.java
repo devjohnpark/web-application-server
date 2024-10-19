@@ -1,16 +1,16 @@
 package com.hello_webserver.http;
 
 import com.hello_webserver.webresources.Resource;
-import com.hello_webserver.webresources.WebResourceHandler;
+import com.hello_webserver.webresources.WebResourceManager;
 import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
-    private final WebResourceHandler resourceHandler;
+    private final WebResourceManager resourceHandler;
 
-    public DefaultHttpApiHandler(WebResourceHandler resourceHandler) {
+    public DefaultHttpApiHandler(WebResourceManager resourceHandler) {
         this.resourceHandler = resourceHandler;
     }
 

@@ -20,6 +20,6 @@ public class Resource {
     }
 
     public boolean isEmpty() {
-        return data == null && contentType == null;
+        return data == null || contentType == null;
     }
 }

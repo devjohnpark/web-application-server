@@ -9,6 +9,7 @@ import util.HttpDateFormatter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 // 1. / -> /index.html 클라이언트가 요청한 url 변경되었으므로 redirect 할수도 있지만, 사용자 관점에서는 홈페이지이므로 필요없다..
 // 2. sendResource -> Resource 타입으로 전달하면 jsonㅇ
@@ -36,29 +37,16 @@ import java.io.OutputStream;
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final DataOutputStream dos;
-    // Response에 한번에 저장할 것인가? HttpResponse에 각 필드별로 set할것인가?
-    private HttpStatus status = HttpStatus.OK;
+    private HttpStatus status;
     private byte[] body;
     private String contentType;
     private String date;
-    private HttpHeader headers;
+    private Map<String, String> headers; // 특정 값에 키 맵핑시켜서 저장
 
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
     }
-
-//    public void setStatus(HttpStatus status) {
-//        this.status = status;
-//    }
-//
-//    public void setContentType(String contentType) {
-//        this.contentType = contentType;
-//    }
-//
-//    public void setDate(String date) {
-//        this.date = date;
-//    }
 
     private void sendResponse(Response response) {
         responseHeader(response, response.getBody().length);
@@ -123,6 +111,36 @@ public class HttpResponse {
             dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
         } catch (IOException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    private static class Response {
+        private final HttpStatus status;
+        private final byte[] body;
+        private final String contentType;
+        private final String date;
+
+        public Response(HttpStatus status, byte[] body, String contentType, String date) {
+            this.status = status;
+            this.body = body;
+            this.contentType = contentType;
+            this.date = date;
+        }
+
+        public HttpStatus getStatus() {
+            return status;
+        }
+
+        public byte[] getBody() {
+            return body;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public String getDate() {
+            return date;
         }
     }
 }
