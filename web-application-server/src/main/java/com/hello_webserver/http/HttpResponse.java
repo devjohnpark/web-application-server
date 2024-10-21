@@ -8,35 +8,9 @@ import util.DateFormatter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
 import java.util.Set;
 
-// 1. / -> /index.html 클라이언트가 요청한 url 변경되었으므로 redirect 할수도 있지만, 사용자 관점에서는 홈페이지이므로 필요없다..
-// 2. sendResource -> Resource 타입으로 전달하면 jsonㅇ
-// 3. 응답할 데이터 준비 객체로 다루는게 좋다. (Tomcat에서는 resource에서 getContent 메서드로 byte[] 타입으로 받아서 보낸다.)
-// 4. resource를 null을 반환 않받도록 패턴 개선
-// 4. 응답할 데이터를 헤더에 적재 (클라에서 요청한 동일한 프로토콜로 전송. 즉, HttpRequest에서 가져와야한다.)
 
-
-// hierarchy
-
-
-
-// 응답 데이터 처리 객체 (HttpResponse)
-//      헤더 저장 객체(HttpHeader) <- 응답 메세지 객체(ResponseMessage)
-//      요청 처리 객체(HttpRequest)의 헤더에서 필요한 값 받는다. (로그인 유무 cookie, session 등)
-//      응답 메세지 객체 (ResponseMessage)
-//          status (판단은 api handler에서)
-//          contentType
-//          date
-//          body content
-// ResourceHandler으로부터 Resource를 받아온다.?
-//
-
-// 클라이언트의 응답 데이터 처리
-
-// Inner class로 필드 감쌀지 고민
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
     private final DataOutputStream dos;

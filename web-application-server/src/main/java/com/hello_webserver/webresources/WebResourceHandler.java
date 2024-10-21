@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class WebResourceHandler implements ResourceHandler {
-    private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(WebResourceHandler.class);
 
     public byte[] readResource(String filePath) {
         try {
