@@ -1,15 +1,16 @@
 package com.hello_webserver.http;
 
-import com.hello_webserver.webresources.Resource;
 import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpDateFormatter;
+import util.DateFormatter;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.Set;
 
 // 1. / -> /index.html 클라이언트가 요청한 url 변경되었으므로 redirect 할수도 있지만, 사용자 관점에서는 홈페이지이므로 필요없다..
 // 2. sendResource -> Resource 타입으로 전달하면 jsonㅇ
@@ -34,113 +35,84 @@ import java.util.Map;
 //
 
 // 클라이언트의 응답 데이터 처리
-public class HttpResponse {
-    private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
-    private final DataOutputStream dos;
-    private HttpStatus status;
-    private byte[] body;
-    private String contentType;
-    private String date;
-    private Map<String, String> headers; // 특정 값에 키 맵핑시켜서 저장
 
+// Inner class로 필드 감쌀지 고민
+public class HttpResponse {
+    private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
+    private final DataOutputStream dos;
+    private final HttpHeader headers = new HttpHeader(); // 특정 값에 키 맵핑시켜서 저장
+    private HttpProtocol httpProtocol = HttpProtocol.HTTP_1_1;
+    private HttpStatus status = HttpStatus.OK;
+    private byte[] body = null;
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
     }
 
-    private void sendResponse(Response response) {
-        responseHeader(response, response.getBody().length);
-        responseBody(response.getBody());
+    public void setProtocol(HttpProtocol protocol) {
+        this.httpProtocol = protocol;
+    }
+
+    public HttpResponse setStatus(HttpStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public HttpResponse setContentType(String contentType) {
+        this.headers.addHeader(HttpHeader.CONTENT_TYPE, contentType);
+        return this;
+    }
+
+    public HttpResponse setBody(byte[] body) {
+        this.body = body;
+        this.headers.addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(body.length));
+        return this;
+    }
+
+    private void setDefaultHeaders() {
+        this.headers.addHeader(HttpHeader.SERVER, "John Park's Web Server");
+        this.headers.addHeader(HttpHeader.DATE, DateFormatter.getCurrentDate());
+    }
+
+    private void writeStatusLine() throws IOException {
+        dos.writeBytes(String.format("%s %d %s\r\n", httpProtocol.getVersion(), status.getCode(), status.getMessage()));
+    }
+
+    private void writeHeaders() throws IOException {
+        Set<String> keys = headers.getHeaders().keySet();
+        for (String key: keys) {
+            dos.writeBytes(key + ": " + headers.getHeaders().get(key) + "\r\n");
+        }
+        dos.writeBytes("\r\n");
+    }
+
+    public void send() {
+        setDefaultHeaders();
+        try {
+            writeStatusLine();
+            writeHeaders();
+            writeBody();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     public void sendError(HttpStatus status) {
-        sendResponse(createErrorResponse(status, status.getDescription()));
+        setStatus(status);
+        send();
     }
 
-    public void sendError(HttpStatus status, String message) {
-        sendResponse(createErrorResponse(status, message));
+    public void sendError(HttpStatus status, String errMessage) {
+        setStatus(status);
+        setBody(errMessage.getBytes());
+        send();
     }
 
-    public void sendResource(Resource resource) {
-        if (resource == null) {
-            sendError(HttpStatus.NOT_FOUND);
-            return;
-        }
-        sendResponse(createResponse(resource));
-    }
-
-    private Response createResponse(Resource resource) {
-        return new Response(HttpStatus.OK, resource.getData(), resource.getContentType(), HttpDateFormatter.getCurrentDate());
-    }
-
-    private Response createErrorResponse(HttpStatus status, String content) {
-        // error는 초기값 설정 (에러마다 페이지 만들자.)
-        return new Response(status, content.getBytes(), "text/html; charset=UTF-8", HttpDateFormatter.getCurrentDate());
-    }
-
-    private String getResponseContentType(String format) {
-//        if (format.isEmpty()) {
-//            // 브라우저/모바일 분기 필요
-//            return "text/html; charset=UTF-8";
-//        } else if (format.equals(".html")) {
-//            return "text/html; charset=UTF-8";
-//        } else if (format.equals(".json")) {
-//            return "application/json; charset=UTF-8";
-//        }
-
-//        return "text/plain; charset=UTF-8";
-        return format;
-    }
-
-    private void responseHeader(Response response, int lengthBody) {
-        try {
-            // HTTP 메세지에서 문자열 줄끝을 구분하기 위해 '\r\n'을 사용
-            dos.writeBytes(String.format("HTTP/1.1 %d %s\r\n", response.getStatus().getCode(), response.getStatus().getMessage()));
-            dos.writeBytes(String.format("Date: %s\r\n", response.getDate()));
-            dos.writeBytes(String.format("Content-Type: %s\r\n", response.getContentType()));
-            dos.writeBytes(String.format("Content-Length: %d\r\n", lengthBody));
-            dos.writeBytes("\r\n"); // HTTP header 마지막줄에 body을 구분하기 위해 반드시 필요
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(byte[] body) {
-        try {
+    private void writeBody() throws IOException {
+        if (body != null) {
             dos.write(body, 0, body.length);
-            dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
-        } catch (IOException e) {
-            log.error(e.getMessage());
         }
-    }
-
-    private static class Response {
-        private final HttpStatus status;
-        private final byte[] body;
-        private final String contentType;
-        private final String date;
-
-        public Response(HttpStatus status, byte[] body, String contentType, String date) {
-            this.status = status;
-            this.body = body;
-            this.contentType = contentType;
-            this.date = date;
-        }
-
-        public HttpStatus getStatus() {
-            return status;
-        }
-
-        public byte[] getBody() {
-            return body;
-        }
-
-        public String getContentType() {
-            return contentType;
-        }
-
-        public String getDate() {
-            return date;
-        }
+        dos.writeBytes("\r\n");
+        dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
     }
 }

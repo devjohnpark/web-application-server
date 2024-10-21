@@ -1,15 +1,16 @@
 package com.hello_webserver.http;
 
 import java.io.*;
+import java.util.Map;
 
-import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpParser;
 
 
 // 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {
-    private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private RequestLine requestLine;
     private HttpHeader header;
 
@@ -35,7 +36,8 @@ public class HttpRequest {
         HttpHeader httpHeader = new HttpHeader();
         String line = br.readLine();
         while (!line.isEmpty()) {
-            httpHeader.addHeader(line);
+            HttpParser.Pair pair = HttpParser.parseHeader(line);
+            httpHeader.addHeader(pair.key(), pair.value());
             line = br.readLine();
         }
         return httpHeader;
@@ -47,9 +49,9 @@ public class HttpRequest {
 
     public String getQueryString() { return requestLine.getQueryString(); }
 
-    public String getParameters(String key) { return requestLine.getParameters().get(key); }
+    public String getParameterValue(String key) { return requestLine.getParameters().get(key); }
 
     public HttpProtocol getProtocol() { return requestLine.getProtocol(); }
 
-    public String getHeaders(String key) { return header.getHeaders().get(key); }
+    public String getHeaderValue(String key) { return header.getHeaders().get(key); }
 }

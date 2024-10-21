@@ -29,7 +29,9 @@ public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
         if (resource.isEmpty()) {
             response.sendError(HttpStatus.NOT_FOUND);
         } else {
-            response.sendResource(resource);
+            response.setContentType(resource.getContentType())
+                    .setBody(resource.getData())
+                    .send();
         }
     }
 }

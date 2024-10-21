@@ -1,40 +1,16 @@
 package com.hello_webserver.http;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum HttpMethod {
-    GET, POST, PUT, PATCH, DELETE;
+    GET("GET"), POST("POST"), PUT("PUT"), PATCH("PATCH"), DELETE("DELETE");
 
-    private static final Map<String, HttpMethod> stringToEnum = new HashMap<>();
+    private final String method;
 
-    static {
-        for (HttpMethod method : values()) {
-            stringToEnum.put(method.name(), method);
-        }
+    HttpMethod(String method) {
+        this.method = method;
     }
 
-    public static HttpMethod fromString(String method) {
-        HttpMethod httpMethod = stringToEnum.get(method.toUpperCase());
-        if (httpMethod == null) {
-            throw new IllegalArgumentException();
-        }
-        return httpMethod;
+    public String getMethod() {
+        return this.method;
     }
 }
 
-
-
-//public enum HttpMethod {
-//    GET("GET"), POST("POST"), PUT("PUT"), PATCH("PATCH"), DELETE("DELETE");
-//
-//    private final String method;
-//
-//    HttpMethod(String method) {
-//        this.method = method;
-//    }
-//
-//    public String getMethod() {
-//        return method;
-//    }
-//}

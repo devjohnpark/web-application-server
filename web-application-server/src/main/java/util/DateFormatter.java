@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class HttpDateFormatter {
+public class DateFormatter {
     public static String getCurrentDate() {
         String pattern = "EEE, dd MMM yyyy HH:mm:ss z";
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);

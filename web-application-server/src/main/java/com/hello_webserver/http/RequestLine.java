@@ -21,7 +21,7 @@ public class RequestLine {
 
     public static RequestLine createFromRequestLine(String requestLine) {
         String[] tokens = HttpParser.parseRequestLine(requestLine);
-        HttpMethod method = HttpMethod.fromString(tokens[0]);
+        HttpMethod method = HttpMethod.valueOf(tokens[0]);
         UrlComponents urlComponents = getUrlComponents(tokens[1]);
         HttpProtocol protocol = HttpProtocol.fromString(tokens[2]);
         return new RequestLine(method, urlComponents.path, urlComponents.queryString, urlComponents.parameters, protocol);
