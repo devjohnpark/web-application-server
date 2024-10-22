@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import util.HttpParser;
 
 import java.util.Map;
-
+import util.HttpParser.Pair;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -101,10 +101,10 @@ class HttpParserTest {
         String url = "/user/create?key=value";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpParser.Pair expected = new HttpParser.Pair("/user/create", "key=value");
+        Pair expected = new Pair("/user/create", "key=value");
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -114,10 +114,10 @@ class HttpParserTest {
         String url = "key??value";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpParser.Pair expected = new HttpParser.Pair("key??value", "");;
+        Pair expected = new Pair("key??value", "");;
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -127,10 +127,10 @@ class HttpParserTest {
         String url = "/user/crea te?ke y=val ue";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpParser.Pair expected = new HttpParser.Pair("/user/crea te", "ke y=val ue");
+        Pair expected = new Pair("/user/crea te", "ke y=val ue");
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -140,10 +140,10 @@ class HttpParserTest {
         String url = "/";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        Pair actual = HttpParser.parseUrl(url);
 
         // then
-        HttpParser.Pair expected = new HttpParser.Pair("/", "");
+        Pair expected = new Pair("/", "");
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -151,9 +151,9 @@ class HttpParserTest {
     void parseHeader_correct_input() {
         String header = "Host: www.example.com";
 
-        HttpParser.Pair actual = HttpParser.parseHeader(header);
+        Pair actual = HttpParser.parseHeader(header);
 
-        HttpParser.Pair expected = new HttpParser.Pair("Host", "www.example.com");
+        Pair expected = new Pair("Host", "www.example.com");
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -162,9 +162,9 @@ class HttpParserTest {
     void parseHeader_non_value() {
         String header = "Host";
 
-        HttpParser.Pair actual = HttpParser.parseHeader(header);
+        Pair actual = HttpParser.parseHeader(header);
 
-        HttpParser.Pair expected = new HttpParser.Pair("Host", "");
+        Pair expected = new Pair("Host", "");
 
         assertThat(actual).isEqualTo(expected);
     }

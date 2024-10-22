@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpParser;
+import util.HttpParser.*;
 
 // 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {
@@ -35,7 +36,7 @@ public class HttpRequest {
         HttpHeader httpHeader = new HttpHeader();
         String line = br.readLine();
         while (!line.isEmpty()) {
-            HttpParser.Pair pair = HttpParser.parseHeader(line);
+            Pair pair = HttpParser.parseHeader(line);
             httpHeader.addHeader(pair.key(), pair.value());
             line = br.readLine();
         }
@@ -65,15 +66,15 @@ public class HttpRequest {
                 return new RequestLine(method, urlComponents.path, urlComponents.queryString, urlComponents.parameters, protocol);
             }
 
-            private static UrlComponents getUrlComponents(String url) {
-                HttpParser.Pair pair = HttpParser.parseUrl(url);
-                String path = pair.key();
-                String queryString = pair.value();
-                Map<String, String> parameters = HttpParser.parseQueryString(queryString);
-                return new UrlComponents(path, queryString, parameters);
-            }
-
-            private record UrlComponents(String path, String queryString, Map<String, String> parameters) {
-            }
+        private static UrlComponents getUrlComponents(String url) {
+            Pair pair = HttpParser.parseUrl(url);
+            String path = pair.key();
+            String queryString = pair.value();
+            Map<String, String> parameters = HttpParser.parseQueryString(queryString);
+            return new UrlComponents(path, queryString, parameters);
         }
+
+        private record UrlComponents(String path, String queryString, Map<String, String> parameters) {
+        }
+    }
 }
