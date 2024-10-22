@@ -1,15 +1,12 @@
-package com.hello_webserver.http;
+package com.hello_webserver.webresources;
 
-import com.hello_webserver.webresources.Resource;
-import com.hello_webserver.webresources.ResourceProvider;
-import com.hello_webserver.webresources.WebResourceHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class RequestLineTest {
+class ResourceProviderTest {
     private ResourceProvider resourceProvider;
 
     @BeforeEach
@@ -30,7 +27,7 @@ class RequestLineTest {
     }
 
     @Test
-    void getResource_incorrect_path() {
+    void getResource_non_exist_path() {
         Resource resource = resourceProvider.getResource("/index");
         assertThat(resource.isEmpty()).isEqualTo(true);
     }

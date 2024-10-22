@@ -42,7 +42,7 @@ public class HttpRequest {
         return httpHeader;
     }
 
-    public HttpMethod getMethod() { return requestLine.method(); }
+    public HttpMethod getMethod() { return requestLine.method; }
 
     public String getPath() { return requestLine.path; }
 
@@ -58,22 +58,22 @@ public class HttpRequest {
                                HttpProtocol protocol) {
 
         public static RequestLine createFromRequestLine(String requestLine) {
-            String[] tokens = HttpParser.parseRequestLine(requestLine);
-            HttpMethod method = HttpMethod.valueOf(tokens[0]);
-            UrlComponents urlComponents = getUrlComponents(tokens[1]);
-            HttpProtocol protocol = HttpProtocol.fromString(tokens[2]);
-            return new RequestLine(method, urlComponents.path, urlComponents.queryString, urlComponents.parameters, protocol);
-        }
+                String[] tokens = HttpParser.parseRequestLine(requestLine);
+                HttpMethod method = HttpMethod.valueOf(tokens[0]);
+                UrlComponents urlComponents = getUrlComponents(tokens[1]);
+                HttpProtocol protocol = HttpProtocol.fromString(tokens[2]);
+                return new RequestLine(method, urlComponents.path, urlComponents.queryString, urlComponents.parameters, protocol);
+            }
 
-        private static UrlComponents getUrlComponents(String url) {
-            HttpParser.Pair pair = HttpParser.parseUrl(url);
-            String path = pair.key();
-            String queryString = pair.value();
-            Map<String, String> parameters = HttpParser.parseQueryString(queryString);
-            return new UrlComponents(path, queryString, parameters);
-        }
+            private static UrlComponents getUrlComponents(String url) {
+                HttpParser.Pair pair = HttpParser.parseUrl(url);
+                String path = pair.key();
+                String queryString = pair.value();
+                Map<String, String> parameters = HttpParser.parseQueryString(queryString);
+                return new UrlComponents(path, queryString, parameters);
+            }
 
-        private record UrlComponents(String path, String queryString, Map<String, String> parameters) {
+            private record UrlComponents(String path, String queryString, Map<String, String> parameters) {
+            }
         }
-    }
 }

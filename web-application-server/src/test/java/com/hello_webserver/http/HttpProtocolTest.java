@@ -10,7 +10,7 @@ class HttpProtocolTest {
     @Test
     void protocol() {
         HttpProtocol httpProtocol = HttpProtocol.fromString("HTTP/1.1");
-        assertThat(httpProtocol.getProtocol()).isEqualTo("HTTP/1.1");
+        assertThat(httpProtocol.getVersion()).isEqualTo("HTTP/1.1");
     }
 
     @Test

@@ -43,23 +43,6 @@ public class HttpResponse {
         return this;
     }
 
-    private void setDefaultHeaders() {
-        this.headers.addHeader(HttpHeader.SERVER, "John Park's Web Server");
-        this.headers.addHeader(HttpHeader.DATE, DateFormatter.getCurrentDate());
-    }
-
-    private void writeStatusLine() throws IOException {
-        dos.writeBytes(String.format("%s %d %s\r\n", httpProtocol.getVersion(), status.getCode(), status.getMessage()));
-    }
-
-    private void writeHeaders() throws IOException {
-        Set<String> keys = headers.getHeaders().keySet();
-        for (String key: keys) {
-            dos.writeBytes(key + ": " + headers.getHeaders().get(key) + "\r\n");
-        }
-        dos.writeBytes("\r\n");
-    }
-
     public void send() {
         setDefaultHeaders();
         try {
@@ -80,6 +63,23 @@ public class HttpResponse {
         setStatus(status);
         setBody(errMessage.getBytes());
         send();
+    }
+
+    private void setDefaultHeaders() {
+        this.headers.addHeader(HttpHeader.SERVER, "John Park's Web Server");
+        this.headers.addHeader(HttpHeader.DATE, DateFormatter.getCurrentDate());
+    }
+
+    private void writeStatusLine() throws IOException {
+        dos.writeBytes(String.format("%s %d %s\r\n", httpProtocol.getVersion(), status.getCode(), status.getMessage()));
+    }
+
+    private void writeHeaders() throws IOException {
+        Set<String> keys = headers.getHeaders().keySet();
+        for (String key: keys) {
+            dos.writeBytes(key + ": " + headers.getHeaders().get(key) + "\r\n");
+        }
+        dos.writeBytes("\r\n");
     }
 
     private void writeBody() throws IOException {

@@ -3,7 +3,7 @@ package com.hello_webserver.http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractHttpApiHandler implements HttpApiHandler {
+abstract class AbstractHttpApiHandler implements HttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(AbstractHttpApiHandler.class);
 
     @Override
