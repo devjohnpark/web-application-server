@@ -1,8 +1,10 @@
 package com.hello_webserver.http;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
+import com.hello_webserver.webresources.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpParser;
@@ -13,12 +15,14 @@ public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private RequestLine requestLine;
     private HttpHeader header;
+    private Map<String, String> parameters;
 
     public HttpRequest(InputStream in) {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             requestLine = createRequestLine(br);
             header = createHeader(br);
+            parameters = createBodyParams(br);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -34,13 +38,34 @@ public class HttpRequest {
 
     private HttpHeader createHeader(BufferedReader br) throws IOException {
         HttpHeader httpHeader = new HttpHeader();
-        String line = br.readLine();
-        while (!line.isEmpty()) {
+        String line;
+        while (!(line = br.readLine()).isEmpty()) {
             Pair pair = HttpParser.parseHeader(line);
             httpHeader.addHeader(pair.key(), pair.value());
-            line = br.readLine();
         }
         return httpHeader;
+    }
+
+    private Map<String, String> createBodyParams(BufferedReader br) throws IOException {
+        String contentLength;
+        String contentType = header.getHeaders().get(HttpHeader.CONTENT_TYPE);
+        if ((contentLength = header.getHeaders().get(HttpHeader.CONTENT_LENGTH)) != null
+                && Integer.parseInt(contentLength) > 0
+                && contentType != null
+        ) {
+            return handleBodyParams(br, contentType);
+        }
+        return new HashMap<>();
+    }
+
+    private Map<String, String> handleBodyParams(BufferedReader br, String contentType) throws IOException {
+        String line;
+        if (ContentType.URL.getContentType().equals(contentType)) {
+            while (!(line = br.readLine()).isEmpty()) {
+                return HttpParser.parseQueryString(line);
+            }
+        }
+        return new HashMap<>();
     }
 
     public HttpMethod getMethod() { return requestLine.method; }
@@ -49,11 +74,24 @@ public class HttpRequest {
 
     public String getQueryString() { return requestLine.queryString; }
 
-    public String getParameterValue(String key) { return requestLine.parameters.get(key); }
+    public String getParameterValue(String key) {
+        if (requestLine.parameters.isEmpty()) {
+            return parameters.get(key);
+        }
+        return requestLine.parameters.get(key);
+    }
 
     public HttpProtocol getProtocol() { return requestLine.protocol; }
 
     public String getHeaderValue(String key) { return header.getHeaders().get(key); }
+
+    public String getCookie() { return header.getHeaders().get(HttpHeader.COOKIE); }
+
+    public String getContentType() { return header.getHeaders().get(HttpHeader.CONTENT_TYPE); }
+
+    public String getContentLength() { return header.getHeaders().get(HttpHeader.CONTENT_LENGTH); }
+
+    public String getConnection() { return header.getHeaders().get(HttpHeader.CONNECTION); }
 
     private record RequestLine(HttpMethod method, String path, String queryString, Map<String, String> parameters,
                                HttpProtocol protocol) {

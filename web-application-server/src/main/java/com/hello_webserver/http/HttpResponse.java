@@ -8,32 +8,52 @@ import util.DateFormatter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpCookie;
 import java.util.Set;
 
 
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
     private final DataOutputStream dos;
-    private final HttpHeader headers = new HttpHeader(); // 특정 값에 키 맵핑시켜서 저장
-    private HttpProtocol httpProtocol = HttpProtocol.HTTP_1_1;
-    private HttpStatus status = HttpStatus.OK;
+    private final StatusLine statusLine = new StatusLine(HttpProtocol.HTTP_1_1, HttpStatus.OK);
+    private final HttpHeader headers = new HttpHeader();
     private byte[] body = null;
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
     }
 
-    public void setProtocol(HttpProtocol protocol) {
-        this.httpProtocol = protocol;
+    private void setDefaultHeaders() {
+        this.headers.addHeader(HttpHeader.SERVER, "John Park's Web Server");
+        this.headers.addHeader(HttpHeader.DATE, DateFormatter.getCurrentDate());
+    }
+
+    public HttpResponse setConnection(boolean isConnection) {
+        if (isConnection) {
+            this.headers.addHeader(HttpHeader.CONNECTION, "keep-alive");
+        } else {
+            this.headers.addHeader(HttpHeader.CONNECTION, "close");
+        }
+        return this;
+    }
+
+    public HttpResponse setProtocol(HttpProtocol protocol) {
+        this.statusLine.protocol = protocol;
+        return this;
     }
 
     public HttpResponse setStatus(HttpStatus status) {
-        this.status = status;
+        this.statusLine.status = status;
         return this;
     }
 
     public HttpResponse setContentType(String contentType) {
         this.headers.addHeader(HttpHeader.CONTENT_TYPE, contentType);
+        return this;
+    }
+
+    public HttpResponse setCookie(boolean isLogin) {
+        this.headers.addHeader(HttpHeader.SET_COOKIE, String.valueOf(isLogin));
         return this;
     }
 
@@ -65,13 +85,8 @@ public class HttpResponse {
         send();
     }
 
-    private void setDefaultHeaders() {
-        this.headers.addHeader(HttpHeader.SERVER, "John Park's Web Server");
-        this.headers.addHeader(HttpHeader.DATE, DateFormatter.getCurrentDate());
-    }
-
     private void writeStatusLine() throws IOException {
-        dos.writeBytes(String.format("%s %d %s\r\n", httpProtocol.getVersion(), status.getCode(), status.getMessage()));
+        dos.writeBytes(statusLine.toString());
     }
 
     private void writeHeaders() throws IOException {
@@ -88,5 +103,21 @@ public class HttpResponse {
         }
         dos.writeBytes("\r\n");
         dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
+    }
+
+    // StatusLine 객체는 HttpResponse 객체에 의존하지 않으므로 static으로 선언
+    private static class StatusLine {
+        private HttpProtocol protocol;
+        private HttpStatus status;
+
+        public StatusLine(HttpProtocol protocol, HttpStatus status) {
+            this.protocol = protocol;
+            this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s %d %s\r\n", protocol.getVersion(), status.getCode(), status.getMessage());
+        }
     }
 }

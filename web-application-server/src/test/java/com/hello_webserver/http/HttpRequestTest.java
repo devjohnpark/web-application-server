@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HttpRequestTest {
     @Test
-    void request_requestLine_not_full() {
+    void request_url_components_not_full() {
         // given
         String httpRequest = """
                     GET / HTTP/1.1
@@ -35,7 +35,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_not_requestLine_full() {
+    void request_not_url_components_full() {
         // given
         String httpRequest = """
                     GET /user/create?name=john&age=20 HTTP/1.1

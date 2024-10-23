@@ -44,18 +44,15 @@ public class RequestHandler extends Thread {
                 // Socket(TCP) Buffer에 저장된 데이터를 쓰기 위한 OutputStream을 제공, 이 스트림을 통해 클라이언트에게 데이터를 보낼수 있다.
                 OutputStream out = connectedSocket.getOutputStream();
         ) {
-            HttpRequest httpRequest = new HttpRequest(in);
-            HttpResponse httpResponse = new HttpResponse(out);
-            httpResponse.setProtocol(httpRequest.getProtocol());
-            handle(httpRequest, httpResponse);
+            HttpRequest request = new HttpRequest(in);
+            HttpResponse response = new HttpResponse(out);
+            response.setProtocol(request.getProtocol())
+                    .setConnection(connectedSocket.getKeepAlive());
+            HttpApiHandler httpApiHandler = httpApiMapper.getHttpApiHandler(request.getPath());
+            httpApiHandler.service(request, response);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-    }
-
-    private void handle(HttpRequest request, HttpResponse response) {
-        HttpApiHandler httpApiHandler = httpApiMapper.getHttpApiHandler(request.getPath());
-        httpApiHandler.service(request, response);
     }
 }
 
