@@ -19,11 +19,6 @@ class HttpRequestTest {
         request = new HttpRequest(in);
     }
 
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @Test
     void request_get_url_components_not_full() {
         // given
@@ -95,4 +90,74 @@ class HttpRequestTest {
         assertThat(request.getProtocol()).isEqualTo(HttpProtocol.HTTP_1_1);
         assertThat(request.getHeaderValue(HttpHeader.CONNECTION)).isEqualTo(request.getConnection());
     }
+
+    @Test
+    void request_post_non_content_length_url() {
+
+        String content = "userId=john park&password=1234";
+        int contentLength = content.length();
+
+        String httpRequestMessage = String.format("""
+                    POST /user/create HTTP/1.1
+                    Connection: keep-alive
+                    Content-Type: %s
+                    Content-Length: %d
+                    
+                    %s
+                    """,  ContentType.URL.getContentType(), contentLength, content);
+
+        // when
+        createHttpRequest(httpRequestMessage);
+
+        // then
+        assertThat(request.getBodyParamValue("userId")).isNull();
+        assertThat(request.getBodyParamValue("password")).isNull();
+    }
+
+    @Test
+    void request_post_invalid_content_length() {
+
+        String content = "userId=john park&password=1234";
+        int contentLength = content.length();
+
+        String httpRequestMessage = String.format("""
+                    POST /user/create HTTP/1.1
+                    Connection: keep-alive
+                    Content-Type: %s
+                    Content-Length: %d
+                    
+                    %s
+                    """,  ContentType.URL.getContentType(), 0, content);
+
+        // when
+        createHttpRequest(httpRequestMessage);
+
+        // then
+        assertThat(request.getBodyParamValue("userId")).isNull();
+        assertThat(request.getBodyParamValue("password")).isNull();
+    }
+
+    @Test
+    void request_post_non_content_type() {
+
+        String content = "userId=john park&password=1234";
+        int contentLength = content.length();
+
+        String httpRequestMessage = String.format("""
+                    POST /user/create HTTP/1.1
+                    Connection: keep-alive
+                    Content-Length: %d
+                    
+                    %s
+                    """, contentLength, content);
+
+        // when
+        createHttpRequest(httpRequestMessage);
+
+        // then
+        assertThat(request.getBodyParamValue("userId")).isNull();
+        assertThat(request.getBodyParamValue("password")).isNull();
+    }
+
+
 }

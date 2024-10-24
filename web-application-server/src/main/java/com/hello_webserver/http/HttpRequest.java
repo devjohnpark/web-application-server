@@ -49,8 +49,8 @@ public class HttpRequest {
     private Map<String, String> createBodyParams(BufferedReader br) throws IOException {
         String contentLength = header.getHeaders().get(HttpHeader.CONTENT_LENGTH);
         String contentType = header.getHeaders().get(HttpHeader.CONTENT_TYPE);
-        if (contentLength != null && contentType != null) {
-            int cl = Integer.parseInt(contentLength);
+        int cl;
+        if (contentLength != null && contentType != null && (cl = Integer.parseInt(contentLength)) > 0) {
             char[] body = new char[cl];
             br.read(body, 0, cl);
             return handleBodyParams(contentType, String.copyValueOf(body));
