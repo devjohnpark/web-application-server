@@ -15,14 +15,14 @@ public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private RequestLine requestLine;
     private HttpHeader header;
-    private Map<String, String> parameters;
+    private Map<String, String> bodyParameters;
 
     public HttpRequest(InputStream in) {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             requestLine = createRequestLine(br);
             header = createHeader(br);
-            parameters = createBodyParams(br);
+            bodyParameters = createBodyParams(br);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -47,23 +47,20 @@ public class HttpRequest {
     }
 
     private Map<String, String> createBodyParams(BufferedReader br) throws IOException {
-        String contentLength;
+        String contentLength = header.getHeaders().get(HttpHeader.CONTENT_LENGTH);
         String contentType = header.getHeaders().get(HttpHeader.CONTENT_TYPE);
-        if ((contentLength = header.getHeaders().get(HttpHeader.CONTENT_LENGTH)) != null
-                && Integer.parseInt(contentLength) > 0
-                && contentType != null
-        ) {
-            return handleBodyParams(br, contentType);
+        if (contentLength != null && contentType != null) {
+            int cl = Integer.parseInt(contentLength);
+            char[] body = new char[cl];
+            br.read(body, 0, cl);
+            return handleBodyParams(contentType, String.copyValueOf(body));
         }
         return new HashMap<>();
     }
 
-    private Map<String, String> handleBodyParams(BufferedReader br, String contentType) throws IOException {
-        String line;
+    private Map<String, String> handleBodyParams(String contentType, String body) {
         if (ContentType.URL.getContentType().equals(contentType)) {
-            while (!(line = br.readLine()).isEmpty()) {
-                return HttpParser.parseQueryString(line);
-            }
+            return HttpParser.parseQueryString(body);
         }
         return new HashMap<>();
     }
@@ -74,12 +71,9 @@ public class HttpRequest {
 
     public String getQueryString() { return requestLine.queryString; }
 
-    public String getParameterValue(String key) {
-        if (requestLine.parameters.isEmpty()) {
-            return parameters.get(key);
-        }
-        return requestLine.parameters.get(key);
-    }
+    public String getRequestLineParamValue(String key) { return requestLine.parameters.get(key); }
+
+    public String getBodyParamValue(String key) { return bodyParameters.get(key); }
 
     public HttpProtocol getProtocol() { return requestLine.protocol; }
 
