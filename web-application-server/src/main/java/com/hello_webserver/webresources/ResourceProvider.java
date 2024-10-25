@@ -12,14 +12,14 @@ public class ResourceProvider {
     public final Resource getResource(String path) {
         String resourcePath = rootPath + setIfRootPath(path);
         byte[] content = resourceHandler.readResource(resourcePath);
-        ContentType contentType = ContentType.fromFilePath(resourcePath);
+        ResourceType contentType = ResourceType.fromFilePath(resourcePath);
         if (isReadContent(content) && isSupportedResourceType(contentType)) {
             return new Resource(content, contentType.getContentType());
         }
         return new Resource();
     }
 
-    private final boolean isSupportedResourceType(ContentType contentType) {
+    private final boolean isSupportedResourceType(ResourceType contentType) {
         return contentType != null;
     }
 

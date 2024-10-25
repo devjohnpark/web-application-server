@@ -16,30 +16,15 @@ import java.net.Socket;
 // 클라이언트 연결 대기용 소켓 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class WebServer {
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
-    private static final int DEFAULT_PORT = 8080;
-    public static final String ROOT_PATH = "webapp";
+    private static int PORT = 8080;
+    public static String ROOT_PATH = "webapp";
 
     public static void main(String[] args) throws IOException {
-        int port = DEFAULT_PORT;
-        String rootPath = ROOT_PATH;
+        if (args != null && args.length > 0) { PORT = Integer.parseInt(args[0]); }
+        if (args != null && args.length > 1) { ROOT_PATH = args[1]; }
 
-        if (args != null && args.length > 0) { port = Integer.parseInt(args[0]); }
-        if (args != null && args.length > 1) { rootPath = args[1]; }
-
-        try (ServerSocket listenSocket = new ServerSocket(port)) {
-            log.debug("Web Application Server started {} port.", port);
-            Socket estabalishedSocket;
-            connect(listenSocket, rootPath);
-        }
-    }
-
-    private static void connect(ServerSocket listenSocket, String rootPath) throws IOException {
-        Socket estabalishedSocket;
-        // accept(): 클라이언트와 연결 요청을 할때까지 block 되고 연결 요청 수락시 새로운 소켓을 생성, 따라서 acceptedSocket은 null 값이 될수 없음
-        while ((estabalishedSocket = listenSocket.accept()) != null) {
-            estabalishedSocket.setKeepAlive(true);
-            RequestHandler requestHandler = new RequestHandler(estabalishedSocket, new HttpApiMapper(rootPath));
-            requestHandler.start();
-        }
+        log.debug("Web Application Server started {} port.", PORT);
+        Connector connector = new Connector(new ServerSocket(PORT));
+        connector.connect();
     }
 }

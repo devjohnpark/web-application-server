@@ -1,7 +1,6 @@
 package com.hello_webserver.http;
 
-import com.hello_webserver.webresources.ContentType;
-import org.junit.jupiter.api.BeforeEach;
+import com.hello_webserver.webresources.ResourceType;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -76,7 +75,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
-                    """,  ContentType.URL.getContentType(), contentLength, content);
+                    """,  ResourceType.URL.getContentType(), contentLength, content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -104,7 +103,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
-                    """,  ContentType.URL.getContentType(), contentLength, content);
+                    """,  ResourceType.URL.getContentType(), contentLength, content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -127,7 +126,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
-                    """,  ContentType.URL.getContentType(), 0, content);
+                    """,  ResourceType.URL.getContentType(), 0, content);
 
         // when
         createHttpRequest(httpRequestMessage);

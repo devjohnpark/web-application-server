@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.hello_webserver.webresources.ContentType;
+import com.hello_webserver.webresources.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpParser;
@@ -59,7 +59,7 @@ public class HttpRequest {
     }
 
     private Map<String, String> handleBodyParams(String contentType, String body) {
-        if (ContentType.URL.getContentType().equals(contentType)) {
+        if (ResourceType.URL.getContentType().equals(contentType)) {
             return HttpParser.parseQueryString(body);
         }
         return new HashMap<>();

@@ -1,6 +1,6 @@
 package com.hello_webserver.webresources;
 
-public enum ContentType {
+public enum ResourceType {
     HTML(".html", "text/html"),
     JS(".js", "application/javascript"),
     CSS(".css", "text/css"),
@@ -12,7 +12,7 @@ public enum ContentType {
     private final String extension;
     private final String contentType;
 
-    ContentType(String extension, String contentType) {
+    ResourceType(String extension, String contentType) {
         this.extension = extension;
         this.contentType = contentType;
     }
@@ -25,8 +25,8 @@ public enum ContentType {
         return contentType;
     }
 
-    public static ContentType fromFilePath(String filePath) {
-        for (ContentType fileType : values()) {
+    public static ResourceType fromFilePath(String filePath) {
+        for (ResourceType fileType : values()) {
             if (filePath.endsWith(fileType.getExtension())) {
                 return fileType;
             }
