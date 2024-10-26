@@ -1,4 +1,4 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.api;
 
 import com.hello_webserver.webresources.ResourceProvider;
 import com.hello_webserver.webresources.WebResourceHandler;

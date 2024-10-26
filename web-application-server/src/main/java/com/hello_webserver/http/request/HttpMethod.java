@@ -1,4 +1,4 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.request;
 
 public enum HttpMethod {
     GET("GET"), POST("POST"), PUT("PUT"), PATCH("PATCH"), DELETE("DELETE");

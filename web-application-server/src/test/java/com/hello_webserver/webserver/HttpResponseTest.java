@@ -1,8 +1,8 @@
 //package com.hello_webserver.webserver;
 //
 //import com.hello_webserver.http.RequestLine;
-//import com.hello_webserver.http.HttpResponse;
-//import com.hello_webserver.http.HttpStatus;
+//import com.hello_webserver.http.response.HttpResponse;
+//import com.hello_webserver.http.response.HttpStatus;
 //import com.hello_webserver.http.Response;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;

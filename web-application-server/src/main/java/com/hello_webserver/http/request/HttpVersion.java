@@ -1,6 +1,6 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.request;
 
-public enum HttpProtocol {
+public enum HttpVersion {
     HTTP_0_9("HTTP/0.9"),
     HTTP_1_0("HTTP/1.0"),
     HTTP_1_1("HTTP/1.1"),
@@ -9,7 +9,7 @@ public enum HttpProtocol {
 
     private final String version;
 
-    HttpProtocol(String version) {
+    HttpVersion(String version) {
         this.version = version;
     }
 
@@ -17,10 +17,10 @@ public enum HttpProtocol {
         return this.version;
     }
 
-    public static HttpProtocol fromString(String version) {
-        for (HttpProtocol protocol : HttpProtocol.values()) {
-            if (protocol.getVersion().equals(version)) {
-                return protocol;
+    public static HttpVersion fromString(String version) {
+        for (HttpVersion httpVersion : HttpVersion.values()) {
+            if (httpVersion.getVersion().equals(version)) {
+                return httpVersion;
             }
         }
         throw new IllegalArgumentException();

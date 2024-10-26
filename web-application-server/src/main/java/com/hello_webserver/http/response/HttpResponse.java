@@ -1,6 +1,6 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.response;
 
-import com.hello_webserver.webserver.RequestHandler;
+import com.hello_webserver.http.request.HttpVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.DateFormatter;
@@ -8,15 +8,14 @@ import util.DateFormatter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpCookie;
 import java.util.Set;
 
 
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
     private final DataOutputStream dos;
-    private final StatusLine statusLine = new StatusLine(HttpProtocol.HTTP_1_1, HttpStatus.OK);
-    private final HttpHeader headers = new HttpHeader();
+    private final StatusLine statusLine = new StatusLine(HttpVersion.HTTP_1_1, HttpStatus.OK);
+    private final HttpResHeaders headers = new HttpResHeaders();
     private byte[] body = null;
 
     public HttpResponse(OutputStream out) {
@@ -24,20 +23,20 @@ public class HttpResponse {
     }
 
     private void setDefaultHeaders() {
-        this.headers.addHeader(HttpHeader.SERVER, "John Park's Web Server");
-        this.headers.addHeader(HttpHeader.DATE, DateFormatter.getCurrentDate());
+        this.headers.addHeader(HttpResHeaders.SERVER, "John Park's Web Server");
+        this.headers.addHeader(HttpResHeaders.DATE, DateFormatter.getCurrentDate());
     }
 
     public HttpResponse setConnection(boolean isConnection) {
         if (isConnection) {
-            this.headers.addHeader(HttpHeader.CONNECTION, "keep-alive");
+            this.headers.addHeader(HttpResHeaders.CONNECTION, "keep-alive");
         } else {
-            this.headers.addHeader(HttpHeader.CONNECTION, "close");
+            this.headers.addHeader(HttpResHeaders.CONNECTION, "close");
         }
         return this;
     }
 
-    public HttpResponse setProtocol(HttpProtocol protocol) {
+    public HttpResponse setProtocol(HttpVersion protocol) {
         this.statusLine.protocol = protocol;
         return this;
     }
@@ -48,18 +47,18 @@ public class HttpResponse {
     }
 
     public HttpResponse setContentType(String contentType) {
-        this.headers.addHeader(HttpHeader.CONTENT_TYPE, contentType);
+        this.headers.addHeader(HttpResHeaders.CONTENT_TYPE, contentType);
         return this;
     }
 
     public HttpResponse setCookie(boolean isLogin) {
-        this.headers.addHeader(HttpHeader.SET_COOKIE, String.valueOf(isLogin));
+        this.headers.addHeader(HttpResHeaders.SET_COOKIE, String.valueOf(isLogin));
         return this;
     }
 
     public HttpResponse setBody(byte[] body) {
         this.body = body;
-        this.headers.addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(body.length));
+        this.headers.addHeader(HttpResHeaders.CONTENT_LENGTH, String.valueOf(body.length));
         return this;
     }
 
@@ -107,10 +106,10 @@ public class HttpResponse {
 
     // StatusLine 객체는 HttpResponse 객체에 의존하지 않으므로 static으로 선언
     private static class StatusLine {
-        private HttpProtocol protocol;
+        private HttpVersion protocol;
         private HttpStatus status;
 
-        public StatusLine(HttpProtocol protocol, HttpStatus status) {
+        public StatusLine(HttpVersion protocol, HttpStatus status) {
             this.protocol = protocol;
             this.status = status;
         }

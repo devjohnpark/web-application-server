@@ -1,10 +1,10 @@
 package com.hello_webserver.util;
 
 import org.junit.jupiter.api.Test;
-import util.HttpParser;
+import com.hello_webserver.http.util.HttpParser;
 
 import java.util.Map;
-import util.HttpParser.Pair;
+import com.hello_webserver.http.util.HttpParser.Pair;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

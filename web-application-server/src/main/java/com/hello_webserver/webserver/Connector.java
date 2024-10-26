@@ -1,6 +1,6 @@
 package com.hello_webserver.webserver;
 
-import com.hello_webserver.http.HttpApiMapper;
+import com.hello_webserver.http.api.HttpApiMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

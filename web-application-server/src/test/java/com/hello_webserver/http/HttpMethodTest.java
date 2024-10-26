@@ -1,5 +1,6 @@
 package com.hello_webserver.http;
 
+import com.hello_webserver.http.request.HttpMethod;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

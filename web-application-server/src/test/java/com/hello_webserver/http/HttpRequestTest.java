@@ -1,5 +1,9 @@
 package com.hello_webserver.http;
 
+import com.hello_webserver.http.request.HttpMethod;
+import com.hello_webserver.http.request.HttpReqHeaders;
+import com.hello_webserver.http.request.HttpRequest;
+import com.hello_webserver.http.request.HttpVersion;
 import com.hello_webserver.webresources.ResourceType;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +40,8 @@ class HttpRequestTest {
         assertThat(request.getQueryString()).isEqualTo("");
         assertThat(request.getRequestLineParamValue("name")).isNull();
         assertThat(request.getRequestLineParamValue("")).isNull();
-        assertThat(request.getProtocol()).isEqualTo(HttpProtocol.HTTP_1_1);
-        assertThat(request.getHeaderValue(HttpHeader.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
 
     @Test
@@ -58,8 +62,8 @@ class HttpRequestTest {
         assertThat(request.getQueryString()).isEqualTo("name=john&age=20");
         assertThat(request.getRequestLineParamValue("name")).isEqualTo("john");
         assertThat(request.getRequestLineParamValue("age")).isEqualTo("20");
-        assertThat(request.getProtocol()).isEqualTo(HttpProtocol.HTTP_1_1);
-        assertThat(request.getHeaderValue(HttpHeader.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
 
     @Test
@@ -86,8 +90,8 @@ class HttpRequestTest {
         assertThat(request.getQueryString()).isEqualTo("");
         assertThat(request.getBodyParamValue("userId")).isEqualTo("john park");
         assertThat(request.getBodyParamValue("password")).isEqualTo("1234");
-        assertThat(request.getProtocol()).isEqualTo(HttpProtocol.HTTP_1_1);
-        assertThat(request.getHeaderValue(HttpHeader.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
 
     @Test
@@ -100,10 +104,9 @@ class HttpRequestTest {
                     POST /user/create HTTP/1.1
                     Connection: keep-alive
                     Content-Type: %s
-                    Content-Length: %d
                     
                     %s
-                    """,  ResourceType.URL.getContentType(), contentLength, content);
+                    """,  ResourceType.URL.getContentType(), content);
 
         // when
         createHttpRequest(httpRequestMessage);

@@ -1,6 +1,6 @@
 //package com.hello_webserver.webserver;
 //
-//import com.hello_webserver.http.HttpRequest;
+//import com.hello_webserver.http.request.HttpRequest;
 //import com.hello_webserver.http.RequestLine;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;

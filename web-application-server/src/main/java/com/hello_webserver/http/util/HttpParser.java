@@ -1,4 +1,4 @@
-package util;
+package com.hello_webserver.http.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class HttpParser {
     }
 
     public static Pair parseHeader(String header) {
-        Pair pair = getKeyValue(header, ": ");
+        Pair pair = getKeyValue(header, ":");
         return setEmptyValue(header, pair);
     }
 

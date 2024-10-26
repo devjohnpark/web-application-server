@@ -1,8 +1,10 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.request;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.hello_webserver.http.util.HttpParser;
+import com.hello_webserver.http.util.HttpParser.Pair;
 /*
 HTTP Request Message Header
 GET / HTTP/1.1
@@ -18,47 +20,32 @@ Referer: https://www.google.com/
  */
 
 /*
-HTTP/1.1 200 OK
-Date: Mon, 16 Oct 2024 10:00:00 GMT
-Server: Apache/2.4.29 (Ubuntu)
-Content-Type: text/html; charset=UTF-8
-Content-Length: 3423
-Connection: keep-alive
-Set-Cookie: sessionId=abc123; Path=/; HttpOnly
-Cache-Control: max-age=3600, must-revalidate
-Last-Modified: Mon, 16 Oct 2024 09:30:00 GMT
-ETag: "123456789abcdef"
-Content-Encoding: gzip
- */
-
-
-/*
 Not Incude Content-Length -> 411 Length Required
  */
 
 
-
-
-public class HttpHeader {
+public class HttpReqHeaders {
     private final Map<String, String> headers = new HashMap<>();
 
+    // Field was shared form all instance -> static
     public static final String HOST = "Host";
     public static final String USER_AGENT = "User-Agent";
     public static final String ACCEPT = "Accept";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_LENGTH = "Content-Length";
     public static final String CONNECTION = "Connection";
     public static final String COOKIE = "Cookie";
 
-    public static final String SERVER = "Server";
-    public static final String DATE = "Date";
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String CONTENT_LENGTH = "Content-Length";
-    public static final String SET_COOKIE = "Set-Cookie";
-
-    public void addHeader(String key, String value) {
-        headers.put(key, value);
+    public void addHeader(String line) {
+        Pair pair = HttpParser.parseHeader(line);
+        headers.put(pair.key(), pair.value());
     }
 
-    public Map<String, String> getHeaders() {
-        return headers;
+//    public Map<String, String> getHeaders() {
+//        return headers;
+//    }
+
+    public String getHeader(String key) {
+        return headers.get(key);
     }
 }

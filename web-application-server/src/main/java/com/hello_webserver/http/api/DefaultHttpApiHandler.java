@@ -1,8 +1,11 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.api;
 
+import com.hello_webserver.http.request.HttpMethod;
+import com.hello_webserver.http.request.HttpRequest;
+import com.hello_webserver.http.response.HttpResponse;
+import com.hello_webserver.http.response.HttpStatus;
 import com.hello_webserver.webresources.Resource;
 import com.hello_webserver.webresources.ResourceProvider;
-import com.hello_webserver.webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

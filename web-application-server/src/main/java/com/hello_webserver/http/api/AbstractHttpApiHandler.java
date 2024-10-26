@@ -1,5 +1,10 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.api;
 
+import com.hello_webserver.http.request.HttpMethod;
+import com.hello_webserver.http.request.HttpRequest;
+import com.hello_webserver.http.request.HttpVersion;
+import com.hello_webserver.http.response.HttpResponse;
+import com.hello_webserver.http.response.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +50,8 @@ abstract class AbstractHttpApiHandler implements HttpApiHandler {
     }
 
     private void sendDefaultError(HttpRequest request, HttpResponse response) {
-        HttpProtocol protocol = request.getProtocol();
-        if (protocol.equals(HttpProtocol.HTTP_0_9) || protocol.equals(HttpProtocol.HTTP_1_0)) {
+        HttpVersion protocol = request.getHttpVersion();
+        if (protocol.equals(HttpVersion.HTTP_0_9) || protocol.equals(HttpVersion.HTTP_1_0)) {
             response.sendError(HttpStatus.METHOD_NOT_ALLOWED);
         } else {
             response.sendError(HttpStatus.BAD_REQUEST);

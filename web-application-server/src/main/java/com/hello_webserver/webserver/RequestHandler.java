@@ -1,13 +1,14 @@
 package com.hello_webserver.webserver;
 
-import com.hello_webserver.http.*;
+import com.hello_webserver.http.api.HttpApiHandler;
+import com.hello_webserver.http.api.HttpApiMapper;
+import com.hello_webserver.http.request.HttpRequest;
+import com.hello_webserver.http.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 // RequsetHandler
 // 사용자 요청을 처리하는 스레드로 응답을 처리한다.
@@ -46,7 +47,7 @@ public class RequestHandler extends Thread {
         ) {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(out);
-            response.setProtocol(request.getProtocol())
+            response.setProtocol(request.getHttpVersion())
                     .setConnection(connectedSocket.getKeepAlive());
             HttpApiHandler httpApiHandler = httpApiMapper.getHttpApiHandler(request.getPath());
             httpApiHandler.service(request, response);

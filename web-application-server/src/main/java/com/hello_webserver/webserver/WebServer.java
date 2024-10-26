@@ -1,12 +1,10 @@
 package com.hello_webserver.webserver;
 
-import com.hello_webserver.http.HttpApiMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 // WebServer
 // main 메서드 인자값으로 포트 번호를 받을 수 있도록 구현
