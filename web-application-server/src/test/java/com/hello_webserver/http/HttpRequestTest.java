@@ -38,8 +38,8 @@ class HttpRequestTest {
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/");
         assertThat(request.getQueryString()).isEqualTo("");
-        assertThat(request.getRequestLineParamValue("name")).isNull();
-        assertThat(request.getRequestLineParamValue("")).isNull();
+        assertThat(request.getRequestParameter("name")).isNull();
+        assertThat(request.getRequestParameter("")).isNull();
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
@@ -60,8 +60,8 @@ class HttpRequestTest {
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/user/create");
         assertThat(request.getQueryString()).isEqualTo("name=john&age=20");
-        assertThat(request.getRequestLineParamValue("name")).isEqualTo("john");
-        assertThat(request.getRequestLineParamValue("age")).isEqualTo("20");
+        assertThat(request.getRequestParameter("name")).isEqualTo("john");
+        assertThat(request.getRequestParameter("age")).isEqualTo("20");
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
@@ -88,8 +88,8 @@ class HttpRequestTest {
         assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getPath()).isEqualTo("/user/create");
         assertThat(request.getQueryString()).isEqualTo("");
-        assertThat(request.getBodyParamValue("userId")).isEqualTo("john park");
-        assertThat(request.getBodyParamValue("password")).isEqualTo("1234");
+        assertThat(request.getRequestParameter("userId")).isEqualTo("john park");
+        assertThat(request.getRequestParameter("password")).isEqualTo("1234");
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
@@ -112,8 +112,8 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getBodyParamValue("userId")).isNull();
-        assertThat(request.getBodyParamValue("password")).isNull();
+        assertThat(request.getRequestParameter("userId")).isNull();
+        assertThat(request.getRequestParameter("password")).isNull();
     }
 
     @Test
@@ -135,8 +135,8 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getBodyParamValue("userId")).isNull();
-        assertThat(request.getBodyParamValue("password")).isNull();
+        assertThat(request.getRequestParameter("userId")).isNull();
+        assertThat(request.getRequestParameter("password")).isNull();
     }
 
     @Test
@@ -157,9 +157,37 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getBodyParamValue("userId")).isNull();
-        assertThat(request.getBodyParamValue("password")).isNull();
+        assertThat(request.getRequestParameter("userId")).isNull();
+        assertThat(request.getRequestParameter("password")).isNull();
     }
 
+    @Test
+    void request_post_urlParams_bodyParams() {
 
+        String content = "userId=john&password=1234";
+        int contentLength = content.length();
+
+        String httpRequestMessage = String.format("""
+                    POST /user/create?userId=jizz&name=jimmy HTTP/1.1
+                    Connection: keep-alive
+                    Content-Type: %s
+                    Content-Length: %d
+                    
+                    %s
+                    """,  ResourceType.URL.getContentType(), contentLength, content);
+
+        // when
+        createHttpRequest(httpRequestMessage);
+
+        // then
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(request.getPath()).isEqualTo("/user/create");
+        assertThat(request.getQueryString()).isEqualTo("userId=jizz&name=jimmy");
+//        assertThat(request.getRequestParameter("userId")).isEqualTo("john park");
+        assertThat(request.getRequestParameter("userId")).isEqualTo("john");
+        assertThat(request.getRequestParameter("name")).isEqualTo("jimmy");
+        assertThat(request.getRequestParameter("password")).isEqualTo("1234");
+        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
+    }
 }

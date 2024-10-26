@@ -41,10 +41,6 @@ public class HttpReqHeaders {
         headers.put(pair.key(), pair.value());
     }
 
-//    public Map<String, String> getHeaders() {
-//        return headers;
-//    }
-
     public String getHeader(String key) {
         return headers.get(key);
     }
