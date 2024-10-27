@@ -44,4 +44,12 @@ public class HttpReqHeaders {
     public String getHeader(String key) {
         return headers.get(key);
     }
+
+    public String getCookie() { return getHeader(COOKIE); }
+
+    public String getContentType() { return getHeader(CONTENT_TYPE); }
+
+    public String getContentLength() { return getHeader(CONTENT_LENGTH); }
+
+    public String getConnection() { return getHeader(CONNECTION); }
 }

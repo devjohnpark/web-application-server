@@ -45,8 +45,8 @@ public class HttpRequest {
     }
 
     private void setBody(BufferedReader br) throws IOException {
-        String contentLength = headers.getHeader(HttpReqHeaders.CONTENT_LENGTH);
-        String contentType = headers.getHeader(HttpReqHeaders.CONTENT_TYPE);
+        String contentLength = getContentLength();
+        String contentType = getContentType();
         int cl;
         if (contentLength != null && contentType != null && (cl = Integer.parseInt(contentLength)) > 0) {
             char[] body = new char[cl];
@@ -56,10 +56,8 @@ public class HttpRequest {
     }
 
     private void setParameters(BufferedReader br) throws IOException {
-        // 1. RequestLine에서 query string 가져와서 호출
-        // 2. body에서 query string 가져와서 호출
         parameters.addRequestLineParameters(requestLine.getQueryString());
-        parameters.addBodyParameters(body, headers.getHeader(HttpReqHeaders.CONTENT_TYPE));
+        parameters.addBodyParameters(body, getContentType());
     }
 
     public HttpMethod getMethod() { return requestLine.getMethod(); }
@@ -74,11 +72,11 @@ public class HttpRequest {
 
     public String getHeader(String key) { return headers.getHeader(key); }
 
-    public String getCookie() { return headers.getHeader(HttpReqHeaders.COOKIE); }
+    public String getCookie() { return headers.getCookie(); }
 
-    public String getContentType() { return headers.getHeader(HttpReqHeaders.CONTENT_TYPE); }
+    public String getContentType() { return headers.getContentType(); }
 
-    public String getContentLength() { return headers.getHeader(HttpReqHeaders.CONTENT_LENGTH); }
+    public String getContentLength() { return headers.getContentLength(); }
 
-    public String getConnection() { return headers.getHeader(HttpReqHeaders.CONNECTION); }
+    public String getConnection() { return headers.getConnection(); }
 }

@@ -76,6 +76,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
+                    
                     """,  ResourceType.URL.getContentType(), contentLength, content);
 
         // when
@@ -103,6 +104,7 @@ class HttpRequestTest {
                     Content-Type: %s
                     
                     %s
+                    
                     """,  ResourceType.URL.getContentType(), content);
 
         // when
@@ -126,6 +128,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
+                    
                     """,  ResourceType.URL.getContentType(), 0, content);
 
         // when
@@ -148,6 +151,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
+                    
                     """, contentLength, content);
 
         // when
@@ -171,6 +175,7 @@ class HttpRequestTest {
                     Content-Length: %d
                     
                     %s
+                    
                     """,  ResourceType.URL.getContentType(), contentLength, content);
 
         // when

@@ -1,8 +1,11 @@
 package com.hello_webserver.webresources;
 
+import java.nio.charset.Charset;
+
 public enum ResourceType {
     HTML(".html", "text/html"),
     JS(".js", "application/javascript"),
+    XML(".xml", "application/xml"),
     CSS(".css", "text/css"),
     PNG(".png", "image/png"),
     JPEG(".jpeg", "image/jpeg"),
@@ -22,6 +25,9 @@ public enum ResourceType {
     }
 
     public String getContentType() {
+        if (this == HTML || this == JS || this == XML || this == CSS) {
+            return contentType + "; charset=UTF-8";
+        }
         return contentType;
     }
 
