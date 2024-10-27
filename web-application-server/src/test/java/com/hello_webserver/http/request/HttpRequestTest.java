@@ -1,14 +1,11 @@
-package com.hello_webserver.http;
+package com.hello_webserver.http.request;
 
-import com.hello_webserver.http.request.HttpMethod;
-import com.hello_webserver.http.request.HttpReqHeaders;
-import com.hello_webserver.http.request.HttpRequest;
-import com.hello_webserver.http.request.HttpVersion;
 import com.hello_webserver.webresources.ResourceType;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,9 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HttpRequestTest {
     private HttpRequest request;
 
-    // 문자열 바이트 배열로 변환 -> 입력 보조 스트림의 내부 버퍼에 저장 -> 입력 스트림으로 버퍼에서 읽어오기
-    private void createHttpRequest(String requestString) {
-        InputStream in = new ByteArrayInputStream(requestString.getBytes(StandardCharsets.UTF_8));
+    // 문자열 바이트 배열로 변환 -> 바이트 기반 입력 스트림의 내부 버퍼에 저장 -> 입력 스트림으로 버퍼에서 읽어오기
+    private void createHttpRequest(String httpMessage) {
+        InputStream in = new ByteArrayInputStream(httpMessage.getBytes(StandardCharsets.UTF_8));
         request = new HttpRequest(in);
     }
 
@@ -48,7 +45,7 @@ class HttpRequestTest {
     void request_get_url_components_full() {
         // given
         String httpRequestMessage = """
-                    GET /user/create?name=john&age=20 HTTP/1.1
+                    GET /user/create?name=john%20park&age=20 HTTP/1.1
                     Connection: keep-alive
 
                     """;
@@ -59,8 +56,8 @@ class HttpRequestTest {
         // then
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getQueryString()).isEqualTo("name=john&age=20");
-        assertThat(request.getRequestParameter("name")).isEqualTo("john");
+        assertThat(request.getQueryString()).isEqualTo("name=john%20park&age=20");
+        assertThat(request.getRequestParameter("name")).isEqualTo("john park");
         assertThat(request.getRequestParameter("age")).isEqualTo("20");
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
@@ -190,4 +187,16 @@ class HttpRequestTest {
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
+
+
+//    @Test
+//    void request_post_urlParams_bodyParams_not_null() {
+//        String input = "GET /user/create?name=john park&age=20 HTTP/1.1";
+//
+//        String encodedURL = URLEncoder.encode(input, StandardCharsets.UTF_8);
+//        System.out.println("Encoded URL: " + encodedURL);
+//
+//        String decodedURL = URLDecoder.decode(encodedURL, StandardCharsets.UTF_8);
+//        System.out.println("Decoded URL: " + decodedURL);
+//    }
 }

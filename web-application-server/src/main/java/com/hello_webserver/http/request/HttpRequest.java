@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import com.hello_webserver.http.utils.HttpParser.Pair;
 
 // 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {

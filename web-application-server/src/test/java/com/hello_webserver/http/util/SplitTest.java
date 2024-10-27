@@ -1,4 +1,4 @@
-package com.hello_webserver.util;
+package com.hello_webserver.http.util;
 
 import org.junit.jupiter.api.Test;
 

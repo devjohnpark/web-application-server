@@ -1,5 +1,7 @@
 package com.hello_webserver.http.request;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +19,7 @@ public class RequestParameters {
     }
 
     public void addRequestLineParameters(String queryString) {
-        addParameters(queryString);
+        addParameters(URLDecoder.decode(queryString, StandardCharsets.UTF_8));
     }
 
     public void addBodyParameters(String queryString, String contentType) {
