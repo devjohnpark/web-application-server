@@ -180,23 +180,10 @@ class HttpRequestTest {
         assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getPath()).isEqualTo("/user/create");
         assertThat(request.getQueryString()).isEqualTo("userId=jizz&name=jimmy");
-//        assertThat(request.getRequestParameter("userId")).isEqualTo("john park");
         assertThat(request.getRequestParameter("userId")).isEqualTo("john");
         assertThat(request.getRequestParameter("name")).isEqualTo("jimmy");
         assertThat(request.getRequestParameter("password")).isEqualTo("1234");
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
     }
-
-
-//    @Test
-//    void request_post_urlParams_bodyParams_not_null() {
-//        String input = "GET /user/create?name=john park&age=20 HTTP/1.1";
-//
-//        String encodedURL = URLEncoder.encode(input, StandardCharsets.UTF_8);
-//        System.out.println("Encoded URL: " + encodedURL);
-//
-//        String decodedURL = URLDecoder.decode(encodedURL, StandardCharsets.UTF_8);
-//        System.out.println("Decoded URL: " + decodedURL);
-//    }
 }
