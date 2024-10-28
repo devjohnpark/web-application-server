@@ -4,10 +4,9 @@ import com.hello_webserver.webresources.ResourceType;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpRequestTest {
@@ -34,7 +33,6 @@ class HttpRequestTest {
         // then
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/");
-        assertThat(request.getQueryString()).isEqualTo("");
         assertThat(request.getRequestParameter("name")).isNull();
         assertThat(request.getRequestParameter("")).isNull();
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
@@ -56,7 +54,6 @@ class HttpRequestTest {
         // then
         assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getQueryString()).isEqualTo("name=john%20park&age=20");
         assertThat(request.getRequestParameter("name")).isEqualTo("john park");
         assertThat(request.getRequestParameter("age")).isEqualTo("20");
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
@@ -77,7 +74,7 @@ class HttpRequestTest {
                     
                     %s
                     
-                    """,  ResourceType.URL.getContentType(), contentLength, content);
+                    """,  ResourceType.URL.getMimeType(), contentLength, content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -85,7 +82,6 @@ class HttpRequestTest {
         // then
         assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getQueryString()).isEqualTo("");
         assertThat(request.getRequestParameter("userId")).isEqualTo("john park");
         assertThat(request.getRequestParameter("password")).isEqualTo("1234");
         assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
@@ -105,7 +101,7 @@ class HttpRequestTest {
                     
                     %s
                     
-                    """,  ResourceType.URL.getContentType(), content);
+                    """,  ResourceType.URL.getMimeType(), content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -129,7 +125,7 @@ class HttpRequestTest {
                     
                     %s
                     
-                    """,  ResourceType.URL.getContentType(), 0, content);
+                    """,  ResourceType.URL.getMimeType(), 0, content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -176,7 +172,7 @@ class HttpRequestTest {
                     
                     %s
                     
-                    """,  ResourceType.URL.getContentType(), contentLength, content);
+                    """,  ResourceType.URL.getMimeType(), contentLength, content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -184,7 +180,6 @@ class HttpRequestTest {
         // then
         assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getQueryString()).isEqualTo("userId=jizz&name=jimmy");
         assertThat(request.getRequestParameter("userId")).isEqualTo("john");
         assertThat(request.getRequestParameter("name")).isEqualTo("jimmy");
         assertThat(request.getRequestParameter("password")).isEqualTo("1234");

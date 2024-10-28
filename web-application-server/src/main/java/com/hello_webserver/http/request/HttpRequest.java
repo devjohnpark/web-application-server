@@ -2,20 +2,23 @@ package com.hello_webserver.http.request;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Optional;
 
+import com.hello_webserver.webresources.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
+    private InputStream in;
     private RequestLine requestLine;
     private final HttpReqHeaders headers = new HttpReqHeaders();
     private final RequestParameters parameters = new RequestParameters();
-    private String body = null;
 
     public HttpRequest(InputStream in) {
         try {
+            this.in = in;
             processHttpRequest(new BufferedReader(new InputStreamReader(in)));
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -25,7 +28,6 @@ public class HttpRequest {
     private void processHttpRequest(BufferedReader br) throws IOException {
         requestLine = setRequestLine(br);
         setHeaders(br);
-        setBody(br);
         setParameters(br);
     }
 
@@ -44,27 +46,28 @@ public class HttpRequest {
         }
     }
 
-    private void setBody(BufferedReader br) throws IOException {
-        String contentLength = getContentLength();
-        String contentType = getContentType();
-        int cl;
-        if (contentLength != null && contentType != null && (cl = Integer.parseInt(contentLength)) > 0) {
-            char[] body = new char[cl];
-            br.read(body, 0, cl);
-            this.body = String.copyValueOf(body);
+    private void setParameters(BufferedReader br) throws IOException {
+        parameters.addRequestLineParameters(requestLine.getQueryString());
+        if (ResourceType.URL.getMimeType().equals(headers.getContentType())) {
+            parameters.addBodyParameters(readBodyParams(br, headers.getContentLength()));
         }
     }
 
-    private void setParameters(BufferedReader br) throws IOException {
-        parameters.addRequestLineParameters(requestLine.getQueryString());
-        parameters.addBodyParameters(body, getContentType());
+    private String readBodyParams(BufferedReader br, String contentLength) throws IOException {
+        int cl;
+        if (contentLength != null && (cl = Integer.parseInt(contentLength)) > 0) {
+            char[] body = new char[cl];
+            br.read(body, 0, cl);
+            return String.copyValueOf(body);
+        }
+        return null;
     }
+
+    public InputStream getInputStream() { return in; }
 
     public HttpMethod getMethod() { return requestLine.getMethod(); }
 
     public String getPath() { return requestLine.getPath(); }
-
-    public String getQueryString() { return requestLine.getQueryString(); }
 
     public String getRequestParameter(String key) { return parameters.getParameter(key); }
 

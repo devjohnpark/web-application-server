@@ -4,10 +4,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.hello_webserver.http.util.HttpParser;
-import com.hello_webserver.http.util.HttpParser.Pair;
 import com.hello_webserver.webresources.ResourceType;
 
 public class RequestParameters {
@@ -22,10 +20,8 @@ public class RequestParameters {
         addParameters(URLDecoder.decode(queryString, StandardCharsets.UTF_8));
     }
 
-    public void addBodyParameters(String queryString, String contentType) {
-        if (ResourceType.URL.getContentType().equals(contentType)) {
-            addParameters(queryString);
-        }
+    public void addBodyParameters(String queryString) {
+        addParameters(queryString);
     }
 
     public String getParameter(String key) { return parameters.get(key); }
