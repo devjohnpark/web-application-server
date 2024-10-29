@@ -49,16 +49,26 @@ public class HttpRequest {
     private void setParameters(BufferedReader br) throws IOException {
         parameters.addRequestLineParameters(requestLine.getQueryString());
         if (ResourceType.URL.getMimeType().equals(headers.getContentType())) {
-            parameters.addBodyParameters(readBodyParams(br, headers.getContentLength()));
+            parameters.addBodyParameters(readBodyAsString(br, headers.getContentLength()));
         }
     }
 
-    private String readBodyParams(BufferedReader br, String contentLength) throws IOException {
+    public String readBodyAsString(BufferedReader br, String contentLength) throws IOException {
         int cl;
         if (contentLength != null && (cl = Integer.parseInt(contentLength)) > 0) {
             char[] body = new char[cl];
             br.read(body, 0, cl);
             return String.copyValueOf(body);
+        }
+        return null;
+    }
+
+    public byte[] readBodyAsBytes(String contentLength) throws IOException {
+        int cl;
+        if (contentLength != null && (cl = Integer.parseInt(contentLength)) > 0) {
+            byte[] body = new byte[cl];
+            in.read(body, 0, cl);
+            return body;
         }
         return null;
     }

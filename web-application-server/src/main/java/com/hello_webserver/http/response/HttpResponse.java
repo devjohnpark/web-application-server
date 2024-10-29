@@ -37,28 +37,44 @@ public class HttpResponse {
     }
 
     public HttpResponse setProtocol(HttpVersion protocol) {
+        if (protocol == null) {
+            throw new IllegalArgumentException();
+        }
         this.statusLine.protocol = protocol;
         return this;
     }
 
     public HttpResponse setStatus(HttpStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException();
+        }
         this.statusLine.status = status;
         return this;
     }
 
     public HttpResponse setContentType(String contentType) {
-        this.headers.addHeader(HttpResHeaders.CONTENT_TYPE, contentType);
+        this.headers.addHeader(HttpResHeaders.CONTENT_TYPE, contentType != null ? contentType : "");
         return this;
     }
 
-    public HttpResponse setCookie(boolean isLogin) {
-        this.headers.addHeader(HttpResHeaders.SET_COOKIE, String.valueOf(isLogin));
+    public HttpResponse setCookie(String cookie) {
+        this.headers.addHeader(HttpResHeaders.SET_COOKIE, cookie != null ? cookie : "");
         return this;
     }
 
     public HttpResponse setBody(byte[] body) {
-        this.body = body;
-        this.headers.addHeader(HttpResHeaders.CONTENT_LENGTH, String.valueOf(body.length));
+        if (body != null) {
+            this.body = body;
+            this.headers.addHeader(HttpResHeaders.CONTENT_LENGTH, String.valueOf(this.body.length));
+        }
+        return this;
+    }
+
+    public HttpResponse setBody(String body) {
+        if (body != null) {
+            this.body = body.getBytes();
+            this.headers.addHeader(HttpResHeaders.CONTENT_LENGTH, String.valueOf(this.body.length));
+        }
         return this;
     }
 
