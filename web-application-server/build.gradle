@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.hello_webserver'
+group = 'org.doci'
 version = '1.0.0-SNAPSHOT'
 
 repositories {

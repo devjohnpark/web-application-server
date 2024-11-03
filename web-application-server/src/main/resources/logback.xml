@@ -39,7 +39,7 @@
         <appender-ref ref="FILE" />
     </root>
 
-<!--    <logger name="com.hello_webserver" additivity="false"> &lt;!&ndash; 콘솔에 출력된 LogController 에 대해서 아래 작업을 실행한다.&ndash;&gt;-->
+<!--    <logger name="com.doci" additivity="false"> &lt;!&ndash; 콘솔에 출력된 LogController 에 대해서 아래 작업을 실행한다.&ndash;&gt;-->
 <!--        <level value = "DEBUG" /> &lt;!&ndash; DEBUG 레벨 이상에서만 실행한다. &ndash;&gt;-->
 <!--        <appender-ref ref="FILE" />-->
 <!--    </logger>-->
