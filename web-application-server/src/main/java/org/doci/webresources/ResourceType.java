@@ -3,6 +3,7 @@ package org.doci.webresources;
 import org.doci.http.util.HttpParser;
 
 public enum ResourceType {
+    TEXT(".txt", "text/plain"),
     HTML(".html", "text/html"),
     JS(".js", "application/javascript"),
     XML(".xml", "application/xml"),
@@ -25,7 +26,7 @@ public enum ResourceType {
     }
 
     public String getMimeType() {
-        if (this == HTML || this == JS || this == XML || this == CSS) {
+        if (this == TEXT || this == HTML || this == JS || this == XML || this == CSS) {
             return contentType + "; charset=UTF-8";
         }
         return contentType;

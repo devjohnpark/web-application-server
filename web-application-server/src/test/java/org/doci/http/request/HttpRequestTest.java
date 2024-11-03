@@ -5,20 +5,21 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpRequestTest {
-    private HttpRequest request;
+    private HttpRequest httpRequest;
 
     // 문자열 바이트 배열로 변환 -> 바이트 기반 입력 스트림의 내부 버퍼에 저장 -> 입력 스트림으로 버퍼에서 읽어오기
     private void createHttpRequest(String httpMessage) {
         InputStream in = new ByteArrayInputStream(httpMessage.getBytes(StandardCharsets.UTF_8));
-        request = new HttpRequest(in);
+        httpRequest = new HttpRequest(in);
     }
 
     @Test
-    void request_get_url_components_not_full() {
+    void request_get_url_only_path() {
         // given
         String httpRequestMessage = """
                     GET / HTTP/1.1
@@ -30,16 +31,16 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
-        assertThat(request.getPath()).isEqualTo("/");
-        assertThat(request.getRequestParameter("name")).isNull();
-        assertThat(request.getRequestParameter("")).isNull();
-        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.GET);
+        assertThat(httpRequest.getPath()).isEqualTo("/");
+        assertThat(httpRequest.getRequestParameter("name")).isNull();
+        assertThat(httpRequest.getRequestParameter("")).isNull();
+        assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
-    void request_get_url_components_full() {
+    void request_get_url_querystring() {
         // given
         String httpRequestMessage = """
                     GET /user/create?name=john%20park&age=20 HTTP/1.1
@@ -51,16 +52,16 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getMethod()).isEqualTo(HttpMethod.GET);
-        assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getRequestParameter("name")).isEqualTo("john park");
-        assertThat(request.getRequestParameter("age")).isEqualTo("20");
-        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.GET);
+        assertThat(httpRequest.getPath()).isEqualTo("/user/create");
+        assertThat(httpRequest.getRequestParameter("name")).isEqualTo("john park");
+        assertThat(httpRequest.getRequestParameter("age")).isEqualTo("20");
+        assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
-    void request_post_content_type_url() {
+    void request_post() {
 
         String content = "userId=john park&password=1234";
         int contentLength = content.length();
@@ -79,19 +80,17 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-        assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getRequestParameter("userId")).isEqualTo("john park");
-        assertThat(request.getRequestParameter("password")).isEqualTo("1234");
-        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(httpRequest.getPath()).isEqualTo("/user/create");
+        assertThat(httpRequest.getRequestParameter("userId")).isEqualTo("john park");
+        assertThat(httpRequest.getRequestParameter("password")).isEqualTo("1234");
+        assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
-    void request_post_non_content_length_url() {
-
+    void request_post_non_content_length() {
         String content = "userId=john park&password=1234";
-        int contentLength = content.length();
 
         String httpRequestMessage = String.format("""
                     POST /user/create HTTP/1.1
@@ -106,15 +105,14 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getRequestParameter("userId")).isNull();
-        assertThat(request.getRequestParameter("password")).isNull();
+        assertThat(httpRequest.getRequestParameter("userId")).isNull();
+        assertThat(httpRequest.getRequestParameter("password")).isNull();
     }
 
     @Test
     void request_post_invalid_content_length() {
 
         String content = "userId=john park&password=1234";
-        int contentLength = content.length();
 
         String httpRequestMessage = String.format("""
                     POST /user/create HTTP/1.1
@@ -124,14 +122,14 @@ class HttpRequestTest {
                     
                     %s
                     
-                    """,  ResourceType.URL.getMimeType(), 0, content);
+                    """,  ResourceType.URL.getMimeType(), -1, content);
 
         // when
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getRequestParameter("userId")).isNull();
-        assertThat(request.getRequestParameter("password")).isNull();
+        assertThat(httpRequest.getRequestParameter("userId")).isNull();
+        assertThat(httpRequest.getRequestParameter("password")).isNull();
     }
 
     @Test
@@ -153,12 +151,12 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getRequestParameter("userId")).isNull();
-        assertThat(request.getRequestParameter("password")).isNull();
+        assertThat(httpRequest.getRequestParameter("userId")).isNull();
+        assertThat(httpRequest.getRequestParameter("password")).isNull();
     }
 
     @Test
-    void request_post_urlParams_bodyParams() {
+    void request_post_requestLineParams_bodyParams_duplication() {
 
         String content = "userId=john&password=1234";
         int contentLength = content.length();
@@ -177,34 +175,56 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST);
-        assertThat(request.getPath()).isEqualTo("/user/create");
-        assertThat(request.getRequestParameter("userId")).isEqualTo("john");
-        assertThat(request.getRequestParameter("name")).isEqualTo("jimmy");
-        assertThat(request.getRequestParameter("password")).isEqualTo("1234");
-        assertThat(request.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(request.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(request.getConnection());
+        assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(httpRequest.getPath()).isEqualTo("/user/create");
+        assertThat(httpRequest.getRequestParameter("userId")).isEqualTo("john");
+        assertThat(httpRequest.getRequestParameter("name")).isEqualTo("jimmy");
+        assertThat(httpRequest.getRequestParameter("password")).isEqualTo("1234");
+        assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
+        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
-    void request() {
-
-        String content = "userId=john park&password=1234";
+    void readAllBodyAsString() throws IOException {
+        String content = "hello world";
         int contentLength = content.length();
 
         String httpRequestMessage = String.format("""
                     POST /user/create HTTP/1.1
                     Connection: keep-alive
+                    Content-Type: %s
+                    Content-Length: %d
                     
                     %s
                     
-                    """, content);
+                    """, ResourceType.TEXT.getMimeType(), contentLength, content);
 
         // when
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(request.getRequestParameter("userId")).isNull();
-        assertThat(request.getRequestParameter("password")).isNull();
+        assertThat(content).isEqualTo(httpRequest.readAllBodyAsString());
+    }
+
+    @Test
+    void readAllBodyAsBytes() throws IOException {
+        String content = "hello world";
+        int contentLength = content.length();
+
+        String httpRequestMessage = String.format("""
+                    POST /user/create HTTP/1.1
+                    Connection: keep-alive
+                    Content-Type: %s
+                    Content-Length: %d
+                    
+                    %s
+                    
+                    """, ResourceType.TEXT.getMimeType(), contentLength, content);
+
+        // when
+        createHttpRequest(httpRequestMessage);
+
+        // then
+        assertThat(content.getBytes()).isEqualTo(httpRequest.readAllBodyAsBytes());
     }
 }

@@ -10,27 +10,27 @@ import org.slf4j.LoggerFactory;
 // 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
-    private InputStream in;
+    private BufferedReader br;
     private RequestLine requestLine;
     private final HttpReqHeaders headers = new HttpReqHeaders();
     private final RequestParameters parameters = new RequestParameters();
 
     public HttpRequest(InputStream in) {
         try {
-            this.in = in;
-            processHttpRequest(new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)));
+            this.br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            processHttpRequest();
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    private void processHttpRequest(BufferedReader br) throws IOException {
-        requestLine = createRequestLine(br);
-        setHeaders(br);
-        setParameters(br);
+    private void processHttpRequest() throws IOException {
+        requestLine = createRequestLine();
+        setHeaders();
+        setParameters();
     }
 
-    private RequestLine createRequestLine(BufferedReader br) throws IOException {
+    private RequestLine createRequestLine() throws IOException {
         String line = br.readLine();
         if (line == null) {
             throw new IllegalStateException();
@@ -38,35 +38,32 @@ public class HttpRequest {
         return RequestLine.createFromRequestLine(line);
     }
 
-    private void setHeaders(BufferedReader br) throws IOException {
+    private void setHeaders() throws IOException {
         String line;
         while (!(line = br.readLine()).isEmpty()) {
             headers.addHeader(line);
         }
     }
 
-    private void setParameters(BufferedReader br) throws IOException {
+    private void setParameters() throws IOException {
         parameters.addRequestLineParameters(requestLine.getQueryString());
         if (ResourceType.URL.getMimeType().equals(headers.getContentType())) {
-            parameters.addBodyParameters(readAllBodyAsString(br, headers.getContentLength()));
+            parameters.addBodyParameters(readAllBodyAsString());
         }
     }
 
-    public String readAllBodyAsString(BufferedReader br, String contentLength) throws IOException {
-        int cl = contentLength == null ? 0 : Integer.parseInt(contentLength);
-        char[] body = new char[cl];
-        br.read(body, 0, cl);
+    public String readAllBodyAsString() throws IOException {
+        int contentLength = headers.getContentLength();
+        char[] body = new char[contentLength];
+        br.read(body, 0, contentLength);
         return String.copyValueOf(body);
     }
 
-    public byte[] readAllBodyAsBytes(String contentLength) throws IOException {
-        int cl = contentLength == null ? 0 : Integer.parseInt(contentLength);
-        byte[] body = new byte[cl];
-        in.read(body, 0, cl);
-        return body;
+    public byte[] readAllBodyAsBytes() throws IOException {
+        return readAllBodyAsString().getBytes();
     }
 
-    public InputStream getInputStream() { return in; }
+    public BufferedReader getBufferedReader() { return br; }
 
     public HttpMethod getMethod() { return requestLine.getMethod(); }
 
@@ -82,7 +79,7 @@ public class HttpRequest {
 
     public String getContentType() { return headers.getContentType(); }
 
-    public String getContentLength() { return headers.getContentLength(); }
+    public int getContentLength() { return headers.getContentLength(); }
 
     public String getConnection() { return headers.getConnection(); }
 }

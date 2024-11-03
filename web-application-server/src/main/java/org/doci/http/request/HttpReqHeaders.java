@@ -47,7 +47,17 @@ public class HttpReqHeaders {
 
     public String getContentType() { return getHeader(CONTENT_TYPE); }
 
-    public String getContentLength() { return getHeader(CONTENT_LENGTH); }
+    public int getContentLength() {
+        return parseContentLength(getHeader(CONTENT_LENGTH));
+    }
 
     public String getConnection() { return getHeader(CONNECTION); }
+
+    private int parseContentLength(String contentLength) {
+        if (contentLength == null) {
+            return 0;
+        }
+        int length = Integer.parseInt(contentLength);
+        return Math.max(length, 0);
+    }
 }
