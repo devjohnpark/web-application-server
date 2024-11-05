@@ -1,7 +1,7 @@
 package org.doci.http.request;
 
 import org.doci.http.util.HttpParser;
-
+import org.doci.http.util.HttpParser.Pair;
 import java.util.Map;
 
 public class RequestLine {
@@ -26,7 +26,7 @@ public class RequestLine {
     }
 
     private static UrlComponents getUrlComponents(String url) {
-        HttpParser.Pair pair = HttpParser.parseUrl(url);
+        Pair pair = HttpParser.parseUrl(url);
         String path = pair.key();
         String queryString = pair.value();
         return new UrlComponents(path, queryString);

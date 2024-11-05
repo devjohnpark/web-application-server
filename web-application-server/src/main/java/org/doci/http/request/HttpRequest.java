@@ -25,12 +25,12 @@ public class HttpRequest {
     }
 
     private void processHttpRequest() throws IOException {
-        requestLine = createRequestLine();
+        requestLine = getRequestLine();
         setHeaders();
         setParameters();
     }
 
-    private RequestLine createRequestLine() throws IOException {
+    private RequestLine getRequestLine() throws IOException {
         String line = br.readLine();
         if (line == null) {
             throw new IllegalStateException();

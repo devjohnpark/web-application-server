@@ -19,7 +19,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_get_url_only_path() {
+    void get_url_only_path() {
         // given
         String httpRequestMessage = """
                     GET / HTTP/1.1
@@ -40,7 +40,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_get_url_querystring() {
+    void get_url_querystring() {
         // given
         String httpRequestMessage = """
                     GET /user/create?name=john%20park&age=20 HTTP/1.1
@@ -61,8 +61,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_post() {
-
+    void post() {
         String content = "userId=john park&password=1234";
         int contentLength = content.length();
 
@@ -89,7 +88,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_post_non_content_length() {
+    void post_non_content_length() {
         String content = "userId=john park&password=1234";
 
         String httpRequestMessage = String.format("""
@@ -110,7 +109,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_post_invalid_content_length() {
+    void post_invalid_content_length() {
 
         String content = "userId=john park&password=1234";
 
@@ -122,7 +121,7 @@ class HttpRequestTest {
                     
                     %s
                     
-                    """,  ResourceType.URL.getMimeType(), -1, content);
+                    """, ResourceType.URL.getMimeType(), -1, content);
 
         // when
         createHttpRequest(httpRequestMessage);
@@ -133,8 +132,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_post_non_content_type() {
-
+    void post_non_content_type() {
         String content = "userId=john park&password=1234";
         int contentLength = content.length();
 
@@ -156,7 +154,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void request_post_requestLineParams_bodyParams_duplication() {
+    void post_requestLineParams_bodyParams_duplication() {
 
         String content = "userId=john&password=1234";
         int contentLength = content.length();
@@ -185,7 +183,7 @@ class HttpRequestTest {
     }
 
     @Test
-    void readAllBodyAsString() throws IOException {
+    void post_readAllBodyAsString() throws IOException {
         String content = "hello world";
         int contentLength = content.length();
 
@@ -203,11 +201,11 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(content).isEqualTo(httpRequest.readAllBodyAsString());
+        assertThat(httpRequest.readAllBodyAsString()).isEqualTo(content);
     }
 
     @Test
-    void readAllBodyAsBytes() throws IOException {
+    void post_readAllBodyAsBytes() throws IOException {
         String content = "hello world";
         int contentLength = content.length();
 
@@ -225,6 +223,6 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(content.getBytes()).isEqualTo(httpRequest.readAllBodyAsBytes());
+        assertThat(httpRequest.readAllBodyAsBytes()).isEqualTo(content.getBytes());
     }
 }
