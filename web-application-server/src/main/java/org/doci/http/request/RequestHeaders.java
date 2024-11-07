@@ -23,7 +23,7 @@ Not Incude Content-Length -> 411 Length Required
  */
 
 
-public class HttpReqHeaders {
+public class RequestHeaders {
     private final Map<String, String> headers = new HashMap<>();
 
     public static final String HOST = "Host";

@@ -2,7 +2,6 @@ package org.doci.http.request;
 
 import org.doci.http.util.HttpParser;
 import org.doci.http.util.HttpParser.Pair;
-import java.util.Map;
 
 public class RequestLine {
     private final HttpMethod method;

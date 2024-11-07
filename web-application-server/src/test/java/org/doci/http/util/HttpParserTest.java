@@ -147,6 +147,24 @@ class HttpParserTest {
     }
 
     @Test
+    void parseRequestLine_correct_input() {
+        String requestLine = "GET / HTTP/1.1";
+
+        String[] tokens = HttpParser.parseRequestLine(requestLine);
+
+        String[] expected = new String[]{"GET", "/", "HTTP/1.1"};
+
+        assertThat(tokens).isEqualTo(expected);
+    }
+
+    @Test
+    void parseRequestLine_incorrect_input() {
+        String requestLine = "GET / ";
+
+        assertThrows(IllegalStateException.class, () -> HttpParser.parseRequestLine(requestLine));
+    }
+
+    @Test
     void parseHeader_correct_input() {
         String header = "Host: www.example.com";
 
@@ -156,6 +174,7 @@ class HttpParserTest {
 
         assertThat(actual).isEqualTo(expected);
     }
+
 
     @Test
     void parseHeader_non_value() {
@@ -169,17 +188,6 @@ class HttpParserTest {
     }
 
     @Test
-    void parseRequestLine_correct_input() {
-        String requestLine = "GET / HTTP/1.1";
-
-        String[] tokens = HttpParser.parseRequestLine(requestLine);
-
-        String[] expected = new String[]{"GET", "/", "HTTP/1.1"};
-
-        assertThat(tokens).isEqualTo(expected);
-    }
-
-    @Test
     void parseHeaderValues() {
         String headerValues = "text/html; charset=utf-8";
         String[] tokens = HttpParser.parseHeaderValues(headerValues);
@@ -188,9 +196,9 @@ class HttpParserTest {
     }
 
     @Test
-    void parseRequestLine_incorrect_input() {
-        String requestLine = "GET / ";
-
-        assertThrows(IllegalStateException.class, () -> HttpParser.parseRequestLine(requestLine));
+    void parseHeaderValues_non() {
+        String headerValues = "text/html";
+        String[] tokens = HttpParser.parseHeaderValues(headerValues);
+        assertThat(tokens.length).isEqualTo(1);
     }
 }

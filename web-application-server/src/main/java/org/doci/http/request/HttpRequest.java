@@ -12,7 +12,7 @@ public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private BufferedReader br;
     private RequestLine requestLine;
-    private final HttpReqHeaders headers = new HttpReqHeaders();
+    private final RequestHeaders headers = new RequestHeaders();
     private final RequestParameters parameters = new RequestParameters();
 
     public HttpRequest(InputStream in) {
@@ -29,6 +29,7 @@ public class HttpRequest {
         setHeaders();
         setParameters();
     }
+
 
     private RequestLine getRequestLine() throws IOException {
         String line = br.readLine();
@@ -48,19 +49,15 @@ public class HttpRequest {
     private void setParameters() throws IOException {
         parameters.addRequestLineParameters(requestLine.getQueryString());
         if (ResourceType.URL.getMimeType().equals(headers.getContentType())) {
-            parameters.addBodyParameters(readAllBodyAsString());
+            parameters.addBodyParameters(getAllBody());
         }
     }
 
-    public String readAllBodyAsString() throws IOException {
+    public String getAllBody() throws IOException {
         int contentLength = headers.getContentLength();
         char[] body = new char[contentLength];
         br.read(body, 0, contentLength);
         return String.copyValueOf(body);
-    }
-
-    public byte[] readAllBodyAsBytes() throws IOException {
-        return readAllBodyAsString().getBytes();
     }
 
     public BufferedReader getBufferedReader() { return br; }

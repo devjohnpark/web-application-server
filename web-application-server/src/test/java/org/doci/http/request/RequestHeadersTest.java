@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HttpReqHeadersTest {
+class RequestHeadersTest {
 
     @Test
     void headers_add_get() {
-        HttpReqHeaders headers = new HttpReqHeaders();
+        RequestHeaders headers = new RequestHeaders();
         String keepAlive = "keep-alive";
         String cookie = "fdafasdfasdfasfsadf";
         String contentType = "text/html; charset=utf-8";
@@ -22,5 +22,18 @@ class HttpReqHeadersTest {
         assertThat(headers.getConnection()).isEqualTo(keepAlive);
         assertThat(headers.getContentType()).isEqualTo(contentType);
         assertThat(headers.getContentLength()).isEqualTo(contentLength);
+    }
+
+    @Test
+    void headers_add_get_negative_content_length() {
+        RequestHeaders headers = new RequestHeaders();
+        String contentType = "text/html; charset=utf-8";
+        int contentLength = -1;
+
+        headers.addHeader(String.format("Content-Type: %s", contentType));
+        headers.addHeader(String.format("Content-Length: %d", contentLength));
+
+        assertThat(headers.getContentType()).isEqualTo(contentType);
+        assertThat(headers.getContentLength()).isEqualTo(0);
     }
 }

@@ -16,9 +16,9 @@ class RequestLineTest {
 
     @Test
     void createRequestLine_with_querystring() {
-        RequestLine requestLine = RequestLine.createFromRequestLine("GET /user/create?name=john%20park&age=20 HTTP/1.1");
+        RequestLine requestLine = RequestLine.createFromRequestLine("GET /user/read?name=john%20park&age=20 HTTP/1.1");
         assertThat(requestLine.getMethod()).isEqualTo(HttpMethod.GET);
-        assertThat(requestLine.getPath()).isEqualTo("/user/create");
+        assertThat(requestLine.getPath()).isEqualTo("/user/read");
         assertThat(requestLine.getQueryString()).isEqualTo("name=john%20park&age=20");
         assertThat(requestLine.getVersion()).isEqualTo(HttpVersion.HTTP_1_1);
     }

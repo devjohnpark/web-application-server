@@ -1,6 +1,7 @@
 package org.doci.http.response;
 
 import org.doci.http.request.HttpVersion;
+import org.doci.webresources.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.doci.util.DateFormatter;
@@ -10,77 +11,65 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 
-
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
     private final DataOutputStream dos;
     private final StatusLine statusLine = new StatusLine(HttpVersion.HTTP_1_1, HttpStatus.OK);
-    private final HttpResHeaders headers = new HttpResHeaders();
-    private byte[] body = null;
+    private final ResponseHeaders headers = new ResponseHeaders();
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
     }
 
-    private void setDefaultHeaders() {
-        this.headers.addHeader(HttpResHeaders.SERVER, "Doci");
-        this.headers.addHeader(HttpResHeaders.DATE, DateFormatter.getCurrentDate());
-    }
-
-    public HttpResponse setProtocol(HttpVersion protocol) {
-        if (protocol == null) {
-            throw new IllegalArgumentException();
-        }
-        this.statusLine.protocol = protocol;
+    public HttpResponse addContentType(String contentType) {
+        this.headers.addHeader(ResponseHeaders.CONTENT_TYPE, contentType);
         return this;
     }
 
-    public HttpResponse setStatus(HttpStatus status) {
-        if (status == null) {
-            throw new IllegalArgumentException();
-        }
-        this.statusLine.status = status;
+    public HttpResponse addCookie(String cookie) {
+        this.headers.addHeader(ResponseHeaders.SET_COOKIE, cookie);
         return this;
     }
 
-    public HttpResponse setContentType(String contentType) {
-        this.headers.addHeader(HttpResHeaders.CONTENT_TYPE, contentType != null ? contentType : "");
-        return this;
+    public void send(HttpStatus status) {
+        send(status, null);
     }
 
-    public HttpResponse setCookie(String cookie) {
-        this.headers.addHeader(HttpResHeaders.SET_COOKIE, cookie != null ? cookie : "");
-        return this;
-    }
-
-    public HttpResponse setBody(byte[] body) {
-        if (body != null) {
-            this.body = body;
-            this.headers.addHeader(HttpResHeaders.CONTENT_LENGTH, String.valueOf(this.body.length));
-        }
-        return this;
-    }
-
-    public void send() {
-        setDefaultHeaders();
-        try {
-            writeStatusLine();
-            writeHeaders();
-            writeBody();
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+    public void send(HttpStatus status, byte[] body) {
+        addStatus(status);
+        addHeaders(body);
+        writeHttpResMessage(body);
     }
 
     public void sendError(HttpStatus status) {
-        setStatus(status);
-        send();
+        sendError(status, status.getDescription());
     }
 
-    public void sendError(HttpStatus status, String errMessage) {
-        setStatus(status);
-        setBody(errMessage.getBytes());
-        send();
+    public void sendError(HttpStatus status, String errorMessage) {
+        addContentType(ResourceType.TEXT.getMimeType());
+        send(status, errorMessage.getBytes());
+    }
+
+    private void addStatus(HttpStatus status) {
+        this.statusLine.setStatus(status);
+    }
+
+    private void addHeaders(byte[] body) {
+        this.headers.addHeader(ResponseHeaders.SERVER, "Doci");
+        this.headers.addHeader(ResponseHeaders.DATE, DateFormatter.getCurrentDate());
+        if (body != null) {
+            this.headers.addHeader(ResponseHeaders.CONTENT_LENGTH, String.valueOf(body.length));
+        }
+    }
+
+    private void writeHttpResMessage(byte[] body) {
+        try {
+            writeStatusLine();
+            writeHeaders();
+            writeBody(body);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void writeStatusLine() throws IOException {
@@ -95,27 +84,11 @@ public class HttpResponse {
         dos.writeBytes("\r\n");
     }
 
-    private void writeBody() throws IOException {
+    private void writeBody(byte[] body) throws IOException {
         if (body != null) {
             dos.write(body, 0, body.length);
         }
         dos.writeBytes("\r\n");
         dos.flush(); // OS의 네트워크 스택인 TCP(socket) 버퍼에 즉시 전달 보장 (flush)
-    }
-
-    // StatusLine 객체는 HttpResponse 객체에 의존하지 않으므로 static으로 선언
-    private static class StatusLine {
-        private HttpVersion protocol;
-        private HttpStatus status;
-
-        public StatusLine(HttpVersion protocol, HttpStatus status) {
-            this.protocol = protocol;
-            this.status = status;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s %d %s\r\n", protocol.getVersion(), status.getCode(), status.getMessage());
-        }
     }
 }

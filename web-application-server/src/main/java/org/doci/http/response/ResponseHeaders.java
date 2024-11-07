@@ -17,7 +17,7 @@ ETag: "123456789abcdef"
 Content-Encoding: gzip
  */
 
-public class HttpResHeaders {
+public class ResponseHeaders {
     private final Map<String, String> headers = new HashMap<>();
 
     public static final String SERVER = "Server";
@@ -28,10 +28,21 @@ public class HttpResHeaders {
     public static final String SET_COOKIE = "Set-Cookie";
 
     public void addHeader(String key, String value) {
+        if (key == null || value == null || key.isEmpty() || value.isEmpty()) {
+            return;
+        }
         headers.put(key, value);
     }
 
     public Map<String, String> getHeaders() {
         return headers;
     }
+
+//    public String getHeader(String key) {
+//        return headers.get(key);
+//    }
+//
+//    public String getContentType() {
+//        return getHeader(CONTENT_TYPE);
+//    }
 }

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +35,7 @@ class HttpRequestTest {
         assertThat(httpRequest.getRequestParameter("name")).isNull();
         assertThat(httpRequest.getRequestParameter("")).isNull();
         assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
+        assertThat(httpRequest.getHeader(RequestHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
@@ -57,11 +56,12 @@ class HttpRequestTest {
         assertThat(httpRequest.getRequestParameter("name")).isEqualTo("john park");
         assertThat(httpRequest.getRequestParameter("age")).isEqualTo("20");
         assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
+        assertThat(httpRequest.getHeader(RequestHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
     void post() {
+        // given
         String content = "userId=john park&password=1234";
         int contentLength = content.length();
 
@@ -84,13 +84,13 @@ class HttpRequestTest {
         assertThat(httpRequest.getRequestParameter("userId")).isEqualTo("john park");
         assertThat(httpRequest.getRequestParameter("password")).isEqualTo("1234");
         assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
+        assertThat(httpRequest.getHeader(RequestHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
     void post_non_content_length() {
+        // given
         String content = "userId=john park&password=1234";
-
         String httpRequestMessage = String.format("""
                     POST /user/create HTTP/1.1
                     Connection: keep-alive
@@ -109,10 +109,9 @@ class HttpRequestTest {
     }
 
     @Test
-    void post_invalid_content_length() {
-
+    void post_negative_content_length() {
+        // given
         String content = "userId=john park&password=1234";
-
         String httpRequestMessage = String.format("""
                     POST /user/create HTTP/1.1
                     Connection: keep-alive
@@ -133,6 +132,7 @@ class HttpRequestTest {
 
     @Test
     void post_non_content_type() {
+        // given
         String content = "userId=john park&password=1234";
         int contentLength = content.length();
 
@@ -154,8 +154,8 @@ class HttpRequestTest {
     }
 
     @Test
-    void post_requestLineParams_bodyParams_duplication() {
-
+    void post_requestLine_body_params_duplication() {
+        // given
         String content = "userId=john&password=1234";
         int contentLength = content.length();
 
@@ -179,11 +179,12 @@ class HttpRequestTest {
         assertThat(httpRequest.getRequestParameter("name")).isEqualTo("jimmy");
         assertThat(httpRequest.getRequestParameter("password")).isEqualTo("1234");
         assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
-        assertThat(httpRequest.getHeader(HttpReqHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
+        assertThat(httpRequest.getHeader(RequestHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
 
     @Test
-    void post_readAllBodyAsString() throws IOException {
+    void post_getAllBody() throws IOException {
+        // given
         String content = "hello world";
         int contentLength = content.length();
 
@@ -201,11 +202,12 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(httpRequest.readAllBodyAsString()).isEqualTo(content);
+        assertThat(httpRequest.getAllBody()).isEqualTo(content);
     }
 
     @Test
-    void post_readAllBodyAsBytes() throws IOException {
+    void post_getAllBodyAsBytes() throws IOException {
+        // given
         String content = "hello world";
         int contentLength = content.length();
 
@@ -223,6 +225,6 @@ class HttpRequestTest {
         createHttpRequest(httpRequestMessage);
 
         // then
-        assertThat(httpRequest.readAllBodyAsBytes()).isEqualTo(content.getBytes());
+        assertThat(httpRequest.getAllBody()).isEqualTo(content);
     }
 }
