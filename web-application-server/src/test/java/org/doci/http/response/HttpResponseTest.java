@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpResponseTest {
-    // add headers -> send -> get data of OutputStream -> checkg
+    // add headers -> send -> get data of OutputStream -> check
     // OutputStream.toString(): ByteArrayOutputStream 클래스의 메서드로, 스트림에 쓰여진 바이트 데이터를 문자열로 변환하여 반환
     private ByteArrayOutputStream outputStream;
     private HttpResponse response;

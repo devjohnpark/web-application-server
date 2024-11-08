@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RequestHeadersTest {
 
     @Test
-    void headers_add_get() {
+    void add_get_headers() {
         RequestHeaders headers = new RequestHeaders();
         String keepAlive = "keep-alive";
         String cookie = "fdafasdfasdfasfsadf";
@@ -25,7 +25,7 @@ class RequestHeadersTest {
     }
 
     @Test
-    void headers_add_get_negative_content_length() {
+    void add_get_headers_negative_content_length() {
         RequestHeaders headers = new RequestHeaders();
         String contentType = "text/html; charset=utf-8";
         int contentLength = -1;
