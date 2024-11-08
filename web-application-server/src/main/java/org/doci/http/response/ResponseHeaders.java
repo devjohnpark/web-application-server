@@ -28,7 +28,7 @@ public class ResponseHeaders {
     public static final String SET_COOKIE = "Set-Cookie";
 
     public void addHeader(String key, String value) {
-        if (key == null || value == null || key.isEmpty() || value.isEmpty()) {
+        if (key == null || value == null || key.isEmpty()) {
             return;
         }
         headers.put(key, value);
@@ -37,12 +37,4 @@ public class ResponseHeaders {
     public Map<String, String> getHeaders() {
         return headers;
     }
-
-//    public String getHeader(String key) {
-//        return headers.get(key);
-//    }
-//
-//    public String getContentType() {
-//        return getHeader(CONTENT_TYPE);
-//    }
 }

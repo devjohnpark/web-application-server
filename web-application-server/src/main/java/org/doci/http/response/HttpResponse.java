@@ -21,23 +21,18 @@ public class HttpResponse {
         this.dos = new DataOutputStream(out);
     }
 
-    public HttpResponse addContentType(String contentType) {
-        this.headers.addHeader(ResponseHeaders.CONTENT_TYPE, contentType);
-        return this;
-    }
-
     public HttpResponse addCookie(String cookie) {
         this.headers.addHeader(ResponseHeaders.SET_COOKIE, cookie);
         return this;
     }
 
     public void send(HttpStatus status) {
-        send(status, null);
+        send(status, null, null);
     }
 
-    public void send(HttpStatus status, byte[] body) {
+    public void send(HttpStatus status, byte[] body, String contentType) {
         addStatus(status);
-        addHeaders(body);
+        addHeaders(contentType, body != null ? body.length : null);
         writeHttpResMessage(body);
     }
 
@@ -46,20 +41,18 @@ public class HttpResponse {
     }
 
     public void sendError(HttpStatus status, String errorMessage) {
-        addContentType(ResourceType.TEXT.getMimeType());
-        send(status, errorMessage.getBytes());
+        send(status, errorMessage.getBytes(), ResourceType.TEXT.getMimeType());
     }
 
     private void addStatus(HttpStatus status) {
         this.statusLine.setStatus(status);
     }
 
-    private void addHeaders(byte[] body) {
+    private void addHeaders(String contentType, Integer contentLength) {
         this.headers.addHeader(ResponseHeaders.SERVER, "Doci");
         this.headers.addHeader(ResponseHeaders.DATE, DateFormatter.getCurrentDate());
-        if (body != null) {
-            this.headers.addHeader(ResponseHeaders.CONTENT_LENGTH, String.valueOf(body.length));
-        }
+        this.headers.addHeader(ResponseHeaders.CONTENT_TYPE, contentType);
+        this.headers.addHeader(ResponseHeaders.CONTENT_LENGTH, contentLength != null ? String.valueOf(contentLength) : null);
     }
 
     private void writeHttpResMessage(byte[] body) {
