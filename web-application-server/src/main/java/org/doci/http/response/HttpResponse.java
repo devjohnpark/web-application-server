@@ -26,6 +26,11 @@ public class HttpResponse {
         return this;
     }
 
+    public HttpResponse addVersion(HttpVersion version) {
+        this.statusLine.setVersion(version);
+        return this;
+    }
+
     public void send(HttpStatus status) {
         send(status, null, null);
     }
@@ -49,7 +54,7 @@ public class HttpResponse {
     }
 
     private void addHeaders(String contentType, Integer contentLength) {
-        this.headers.addHeader(ResponseHeaders.SERVER, "Doci");
+        this.headers.addHeader(ResponseHeaders.SERVER, "doci");
         this.headers.addHeader(ResponseHeaders.DATE, DateFormatter.getCurrentDate());
         this.headers.addHeader(ResponseHeaders.CONTENT_TYPE, contentType);
         this.headers.addHeader(ResponseHeaders.CONTENT_LENGTH, contentLength != null ? String.valueOf(contentLength) : null);

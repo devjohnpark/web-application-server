@@ -3,11 +3,11 @@ package org.doci.http.response;
 import org.doci.http.request.HttpVersion;
 
 public class StatusLine {
-    private HttpVersion protocol;
+    private HttpVersion version;
     private HttpStatus status;
 
     public StatusLine(HttpVersion protocol, HttpStatus status) {
-        this.protocol = protocol;
+        this.version = protocol;
         this.status = status;
     }
 
@@ -18,15 +18,15 @@ public class StatusLine {
         this.status = status;
     }
 
-    public void setProtocol(HttpVersion protocol) {
-        if (protocol == null) {
+    public void setVersion(HttpVersion version) {
+        if (version == null) {
             return;
         }
-        this.protocol = protocol;
+        this.version = version;
     }
 
-    public HttpVersion getProtocol() {
-        return protocol;
+    public HttpVersion getVersion() {
+        return version;
     }
 
     public HttpStatus getStatus() {
@@ -35,6 +35,6 @@ public class StatusLine {
 
     @Override
     public String toString() {
-        return String.format("%s %d %s\r\n", protocol.getVersion(), status.getCode(), status.getMessage());
+        return String.format("%s %d %s\r\n", version.getVersion(), status.getCode(), status.getMessage());
     }
 }
