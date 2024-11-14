@@ -5,29 +5,29 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ResourceProviderTest {
-    private ResourceProvider resourceProvider;
+class WebResourceProviderTest {
+    private WebResourceProvider webResourceProvider;
 
     @BeforeEach
     void setUp() {
-        resourceProvider = new ResourceProvider("webapp", new WebResourceHandler());
+        webResourceProvider = new WebResourceProvider("webapp", new WebResourceHandler());
     }
 
     @Test
     void getResource_root_path() {
-        Resource resource = resourceProvider.getResource("/");
+        Resource resource = webResourceProvider.getResource("/");
         assertThat(resource.isEmpty()).isEqualTo(false);
     }
 
     @Test
     void getResource_index_path() {
-        Resource resource = resourceProvider.getResource("/index.html");
+        Resource resource = webResourceProvider.getResource("/index.html");
         assertThat(resource.isEmpty()).isEqualTo(false);
     }
 
     @Test
     void getResource_non_exist_path() {
-        Resource resource = resourceProvider.getResource("/index");
+        Resource resource = webResourceProvider.getResource("/index");
         assertThat(resource.isEmpty()).isEqualTo(true);
     }
 }

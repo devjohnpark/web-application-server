@@ -1,18 +1,21 @@
 package org.doci.http.api;
 
-import org.doci.webresources.ResourceProvider;
+import org.doci.webresources.WebResourceProvider;
 import org.doci.webresources.WebResourceHandler;
+import org.doci.webserver.ServerConfig;
 import org.doci.webserver.WebServer;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class HttpApiMapper {
-    private static final Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
-
+    private final static Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
     static {
-        httpApiHandlers.put("/", new DefaultHttpApiHandler(new ResourceProvider(WebServer.rootPath, new WebResourceHandler())));
-        httpApiHandlers.put("/user/create", new LoginHttpApiHandler());
+        httpApiHandlers.put("/", new DefaultHttpApiHandler(new WebResourceProvider(ServerConfig.getWebBase(), new WebResourceHandler())));
+    }
+
+    public static void registerHttpApiHandler(String path, HttpApiHandler handler) {
+        httpApiHandlers.put(path, handler);
     }
 
     public static HttpApiHandler getHttpApiHandler(String path) {

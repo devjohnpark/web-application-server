@@ -1,11 +1,12 @@
 package org.doci.http.response;
 
+import org.doci.http.request.HttpRequest;
 import org.doci.util.DateFormatter;
 import org.doci.webresources.ResourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +25,7 @@ class HttpResponseTest {
     }
 
     @Test
-    void send_status() {
+    void send() {
         response.send(HttpStatus.OK);
 
         String result = outputStream.toString();

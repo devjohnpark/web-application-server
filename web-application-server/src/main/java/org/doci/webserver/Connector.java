@@ -1,6 +1,5 @@
 package org.doci.webserver;
 
-import org.doci.http.api.HttpApiMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

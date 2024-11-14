@@ -1,10 +1,10 @@
 package org.doci.webresources;
 
-public class ResourceProvider {
+public class WebResourceProvider {
     private final String rootPath;
     private final ResourceHandler resourceHandler;
 
-    public ResourceProvider(String rootPath, ResourceHandler resourceHandler) {
+    public WebResourceProvider(String rootPath, ResourceHandler resourceHandler) {
         this.rootPath = rootPath;
         this.resourceHandler = resourceHandler;
     }

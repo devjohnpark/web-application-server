@@ -18,12 +18,21 @@ class RequestParametersTest {
     }
 
     @Test
-    void addRequestParameters() {
+    void addRequestParameters_requestLine() {
         String queryStringWithUrlEncoded = "name=john%20park&age=20";
         parameters.addRequestParameters(queryStringWithUrlEncoded);
         assertThat(parameters.getParameter("name")).isEqualTo("john park");
         assertThat(parameters.getParameter("age")).isEqualTo("20");
     }
+
+    @Test
+    void addRequestParameters_formUrlEncoded() {
+        String queryStringWithUrlEncoded = "name=john+park&age=20";
+        parameters.addRequestParameters(queryStringWithUrlEncoded);
+        assertThat(parameters.getParameter("name")).isEqualTo("john park");
+        assertThat(parameters.getParameter("age")).isEqualTo("20");
+    }
+
 
     @Test
     void addRequestParameters_null() {

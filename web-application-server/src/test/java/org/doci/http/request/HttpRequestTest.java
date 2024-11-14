@@ -23,7 +23,7 @@ class HttpRequestTest {
     @Test
     void get_only_path() {
         // given, when
-        createHttpRequest("get_only_path.txt");
+        createHttpRequest("http_req_get_only_path.txt");
 
         // then
         assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.GET);
@@ -37,13 +37,13 @@ class HttpRequestTest {
     @Test
     void get_path_queryString() {
         // given, when
-        createHttpRequest("get_query-string.txt");
+        createHttpRequest("http_req_get_query-string.txt");
 
         // then
         assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.GET);
         assertThat(httpRequest.getPath()).isEqualTo("/user");
         assertThat(httpRequest.getRequestParameter("name")).isEqualTo("john park");
-        assertThat(httpRequest.getRequestParameter("age")).isEqualTo("20");
+        assertThat(httpRequest.getRequestParameter("password")).isEqualTo("1234");
         assertThat(httpRequest.getHttpVersion()).isEqualTo(HttpVersion.HTTP_1_1);
         assertThat(httpRequest.getHeader(RequestHeaders.CONNECTION)).isEqualTo(httpRequest.getConnection());
     }
@@ -51,7 +51,7 @@ class HttpRequestTest {
     @Test
     void post() {
         // given, when
-        createHttpRequest("post.txt");
+        createHttpRequest("http_req_post.txt");
 
         // then
         assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.POST);
@@ -65,7 +65,7 @@ class HttpRequestTest {
     @Test
     void post_non_contentLength() {
         // given, when
-        createHttpRequest("post_non_content-length.txt");
+        createHttpRequest("http_req_post_non_content-length.txt");
 
         // then
         assertThat(httpRequest.getRequestParameter("userId")).isNull();
@@ -75,7 +75,7 @@ class HttpRequestTest {
     @Test
     void post_negative_contentLength() {
         // given, when
-        createHttpRequest("post_negative_content-length.txt");
+        createHttpRequest("http_req_post_negative_content-length.txt");
 
         // then
         assertEquals(0, httpRequest.getContentLength());
@@ -86,7 +86,7 @@ class HttpRequestTest {
     @Test
     void post_non_contentType() {
         // given, when
-        createHttpRequest("post_non_content-type.txt");
+        createHttpRequest("http_req_post_non_content-type.txt");
 
         // then
         assertThat(httpRequest.getRequestParameter("userId")).isNull();
@@ -96,7 +96,7 @@ class HttpRequestTest {
     @Test
     void post_requestLine_body_params_duplication() {
         // given, when
-        createHttpRequest("post_request-params_duplication.txt");
+        createHttpRequest("http_req_post_request-params_duplication.txt");
 
         // then
         assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.POST);
@@ -111,7 +111,7 @@ class HttpRequestTest {
     @Test
     void post_getAllBody() throws IOException {
         // given, when
-        createHttpRequest("post_content-type_text.txt");
+        createHttpRequest("http_req_post_content-type_text.txt");
 
         // then
         assertThat(httpRequest.getAllBody()).isEqualTo("hello world");

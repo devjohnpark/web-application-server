@@ -6,9 +6,9 @@
 //// HTTP 요청에 따른 API Handler를 할당받아 처리
 //public class HttpProcessor {
 //    private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
-//    private final HttpApiMapper httpApiMapper;
+//    private final HttpApiMappig httpApiMapper;
 //
-//    public HttpProcessor(HttpApiMapper httpApiMapper) {
+//    public HttpProcessor(HttpApiMappig httpApiMapper) {
 //        this.httpApiMapper = httpApiMapper;
 //    }
 //

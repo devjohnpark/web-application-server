@@ -14,15 +14,12 @@ import java.net.ServerSocket;
 // 클라이언트 연결 대기용 소켓 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class WebServer {
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
-    private static final int PORT = 8080;
-    public static final String rootPath = "webapp";
 
-    public static void main(String[] args) throws IOException {
-        int port = PORT;
-        if (args != null && args.length > 0) { port = Integer.parseInt(args[0]); }
-
-        log.debug("Web Application Server started {} Port.", PORT);
-        Connector connector = new Connector(new ServerSocket(PORT));
+    public static void main(String[] args) throws Exception {
+        ServerConfig.loadConfig("./src/main/resources/config.xml");
+        int port = ServerConfig.getPort();
+        log.debug("Web Application Server started {} Port.", port);
+        Connector connector = new Connector(new ServerSocket(port));
         connector.connect();
     }
 }
