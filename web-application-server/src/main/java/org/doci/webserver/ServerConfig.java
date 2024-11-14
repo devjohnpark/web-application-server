@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class ServerConfig {
-    private static int port;
-    private static String webBase;
+    private static int port = 8080;
+    private static String webBase = "webapp";
 
     // XML 파일을 읽어와서 port와 webBase를 설정
     public static void loadConfig(String filePath) throws Exception {
@@ -20,15 +20,10 @@ public class ServerConfig {
 
         // XML에서 port와 webBase 값을 추출
         NodeList portNodes = document.getElementsByTagName("port");
+        port = Integer.parseInt(portNodes.item(0).getTextContent());
+
         NodeList webBaseNodes = document.getElementsByTagName("webBase");
-
-        if (portNodes.getLength() > 0) {
-            port = Integer.parseInt(portNodes.item(0).getTextContent());
-        }
-
-        if (webBaseNodes.getLength() > 0) {
-            webBase = webBaseNodes.item(0).getTextContent();
-        }
+        webBase = webBaseNodes.item(0).getTextContent();
     }
 
     public static int getPort() {

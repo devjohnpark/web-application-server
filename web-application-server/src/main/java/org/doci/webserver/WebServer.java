@@ -16,7 +16,7 @@ public class WebServer {
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
 
     public static void main(String[] args) throws Exception {
-        ServerConfig.loadConfig("./src/main/resources/config.xml");
+        ServerConfig.loadConfig("./src/main/resources/server.xml");
         int port = ServerConfig.getPort();
         log.debug("Web Application Server started {} Port.", port);
         Connector connector = new Connector(new ServerSocket(port));
