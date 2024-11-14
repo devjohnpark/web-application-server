@@ -19,19 +19,19 @@ public class RequestLine {
     public static RequestLine createFromRequestLine(String requestLine) {
         String[] tokens = HttpParser.parseRequestLine(requestLine);
         HttpMethod method = HttpMethod.valueOf(tokens[0]);
-        UrlComponents urlComponents = getUrlComponents(tokens[1]);
+        Uri uri = getUri(tokens[1]);
         HttpVersion version = HttpVersion.fromString(tokens[2]);
-        return new RequestLine(method, urlComponents.path, urlComponents.queryString, version);
+        return new RequestLine(method, uri.path, uri.queryString, version);
     }
 
-    private static UrlComponents getUrlComponents(String url) {
-        Pair pair = HttpParser.parseUrl(url);
+    private static Uri getUri(String uri) {
+        Pair pair = HttpParser.parseRequestUri(uri);
         String path = pair.key();
         String queryString = pair.value();
-        return new UrlComponents(path, queryString);
+        return new Uri(path, queryString);
     }
 
-    private record UrlComponents(String path, String queryString) {}
+    private record Uri(String path, String queryString) {}
 
     public HttpMethod getMethod() { return method; }
 

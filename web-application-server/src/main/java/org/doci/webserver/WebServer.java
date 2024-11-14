@@ -15,13 +15,11 @@ import java.net.ServerSocket;
 public class WebServer {
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
     private static final int PORT = 8080;
-    public static String rootPath = "webapp";
+    public static final String rootPath = "webapp";
 
     public static void main(String[] args) throws IOException {
         int port = PORT;
-
         if (args != null && args.length > 0) { port = Integer.parseInt(args[0]); }
-        if (args != null && args.length > 1) { rootPath = args[1]; }
 
         log.debug("Web Application Server started {} Port.", PORT);
         Connector connector = new Connector(new ServerSocket(PORT));

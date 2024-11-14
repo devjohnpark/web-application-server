@@ -19,11 +19,9 @@ import java.net.Socket;
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connectedSocket;
-    private final HttpApiMapper httpApiMapper;
 
-    public RequestHandler(Socket connectedSocket, HttpApiMapper httpApiMapper) {
+    public RequestHandler(Socket connectedSocket) {
         this.connectedSocket = connectedSocket;
-        this.httpApiMapper = httpApiMapper;
     }
 
     // 1. 클라이언트 요청 헤더에서 HTTP Method과 리소스 경로 확인
@@ -47,7 +45,7 @@ public class RequestHandler extends Thread {
         ) {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(out);
-            HttpApiHandler httpApiHandler = httpApiMapper.getHttpApiHandler(request.getPath());
+            HttpApiHandler httpApiHandler = HttpApiMapper.getHttpApiHandler(request.getPath());
             httpApiHandler.service(request, response);
         } catch (IOException e) {
             log.error(e.getMessage());

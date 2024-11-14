@@ -8,19 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpApiMapper {
-    private static Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
-
-    private final String webAppDir = WebServer.rootPath;
+    private static final Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
 
     static {
-        httpApiHandlers.put("/user/create", new LoginHttpApihandler());
+        httpApiHandlers.put("/", new DefaultHttpApiHandler(new ResourceProvider(WebServer.rootPath, new WebResourceHandler())));
+        httpApiHandlers.put("/user/create", new LoginHttpApiHandler());
     }
 
-    public HttpApiHandler getHttpApiHandler(String path) {
-        // url에 맵핑된 http method 요청 조회하고 없으면 DefaultHttpApiHandler 반환
+    public static HttpApiHandler getHttpApiHandler(String path) {
         HttpApiHandler httpApiHandler = httpApiHandlers.get(path);
         if (httpApiHandler == null) {
-            httpApiHandler = new DefaultHttpApiHandler(new ResourceProvider(webAppDir, new WebResourceHandler()));
+            httpApiHandler = httpApiHandlers.get("/");
         }
         return httpApiHandler;
     }

@@ -15,11 +15,7 @@ public class RequestParameters {
         parameters.putAll(HttpParser.parseQueryString(queryString));
     }
 
-    public void addRequestLineParameters(String queryString) {
-        addParameters(setQueryString(queryString));
-    }
-
-    public void addBodyParameters(String queryString) {
+    public void addRequestParameters(String queryString) {
         addParameters(setQueryString(queryString));
     }
 

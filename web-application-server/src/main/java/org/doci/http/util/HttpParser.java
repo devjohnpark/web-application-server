@@ -33,9 +33,9 @@ public class HttpParser {
         return map;
     }
 
-    public static Pair parseUrl(String url) {
-        Pair pair = getKeyValue(url, "\\?");
-        return setEmptyValue(url, pair);
+    public static Pair parseRequestUri(String uri) {
+        Pair pair = getKeyValue(uri, "\\?");
+        return setEmptyValue(uri, pair);
     }
 
     // key: can't be empty, value: can be empty

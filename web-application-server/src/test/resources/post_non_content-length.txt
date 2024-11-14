@@ -1,0 +1,5 @@
+POST /user/create HTTP/1.1
+Connection: keep-alive
+Content-Type: application/x-www-form-urlencoded
+
+userId=john+park&password=1234

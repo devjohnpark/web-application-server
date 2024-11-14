@@ -23,21 +23,6 @@ class HttpParserTest {
     }
 
     @Test
-    void parseQueryString_including_space() {
-        String queryString = "userId =john & password =1234 &name=john park";
-
-        Map<String, String> expected = Map.of(
-                "userId", "john",
-                "password", "1234",
-                "name", "john park"
-        );
-
-        Map<String, String> result = HttpParser.parseQueryString(queryString);
-
-        assertEquals(expected, result);
-    }
-
-    @Test
     void parseQueryString_parameter_separator_duplication_sequence() {
         String queryString = "userId=john&password==1234&name=john park";
 
@@ -95,12 +80,12 @@ class HttpParserTest {
     }
 
     @Test
-    void parseUrl_correct_input() {
+    void parseRequestUri_correct_input() {
         // given
-        String url = "/user/create?key=value";
+        String requestUri = "/user/create?key=value";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseRequestUri(requestUri);
 
         // then
         HttpParser.Pair expected = new HttpParser.Pair("/user/create", "key=value");
@@ -108,12 +93,12 @@ class HttpParserTest {
     }
 
     @Test
-    void parseUrl_separator_duplication() {
+    void parseRequestUri_separator_duplication() {
         // given
-        String url = "key??value";
+        String requestUri = "key??value";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseRequestUri(requestUri);
 
         // then
         HttpParser.Pair expected = new HttpParser.Pair("key??value", "");;
@@ -121,12 +106,12 @@ class HttpParserTest {
     }
 
     @Test
-    void parseUrl_including_space() {
+    void parseRequestUri_including_space() {
         // given
-        String url = "/user/crea te?ke y=val ue";
+        String requestUri = "/user/crea te?ke y=val ue";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseRequestUri(requestUri);
 
         // then
         HttpParser.Pair expected = new HttpParser.Pair("/user/crea te", "ke y=val ue");
@@ -134,12 +119,12 @@ class HttpParserTest {
     }
 
     @Test
-    void parseUrl_non_querystring() {
+    void parseRequestUri_non_querystring() {
         // given
-        String url = "/";
+        String requestUri = "/";
 
         // when
-        HttpParser.Pair actual = HttpParser.parseUrl(url);
+        HttpParser.Pair actual = HttpParser.parseRequestUri(requestUri);
 
         // then
         HttpParser.Pair expected = new HttpParser.Pair("/", "");

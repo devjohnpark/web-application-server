@@ -2,6 +2,7 @@ package org.doci.http.api;
 
 import org.doci.http.request.HttpMethod;
 import org.doci.http.request.HttpRequest;
+import org.doci.http.request.HttpVersion;
 import org.doci.http.response.HttpResponse;
 import org.doci.http.response.HttpStatus;
 import org.doci.webresources.Resource;

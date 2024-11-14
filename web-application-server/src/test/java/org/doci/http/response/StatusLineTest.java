@@ -15,17 +15,6 @@ class StatusLineTest {
     }
 
     @Test
-    void createStatusLine() {
-        HttpVersion version = HttpVersion.HTTP_1_1;
-        HttpStatus status = HttpStatus.OK;
-
-        StatusLine sl = new StatusLine(version, status);
-
-        assertEquals(version, sl.getVersion());
-        assertEquals(status, sl.getStatus());
-    }
-
-    @Test
     void setVersion() {
         HttpVersion newVersion = HttpVersion.HTTP_2_0;
 

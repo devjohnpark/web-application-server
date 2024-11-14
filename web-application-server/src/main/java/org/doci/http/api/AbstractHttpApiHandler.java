@@ -8,7 +8,7 @@ import org.doci.http.response.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class AbstractHttpApiHandler implements HttpApiHandler {
+public abstract class AbstractHttpApiHandler implements HttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(AbstractHttpApiHandler.class);
 
     @Override
@@ -31,9 +31,7 @@ abstract class AbstractHttpApiHandler implements HttpApiHandler {
 
     protected void doGet(HttpRequest request, HttpResponse response) { sendDefaultError(request, response); }
 
-    protected void doPost(HttpRequest request, HttpResponse response) {
-        sendDefaultError(request, response);
-    }
+    protected void doPost(HttpRequest request, HttpResponse response) { sendDefaultError(request, response); }
 
     protected void doPut(HttpRequest request, HttpResponse response) {
         sendDefaultError(request, response);

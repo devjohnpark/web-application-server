@@ -18,45 +18,23 @@ class RequestParametersTest {
     }
 
     @Test
-    void addRequestLineParameter() {
+    void addRequestParameters() {
         String queryStringWithUrlEncoded = "name=john%20park&age=20";
-        parameters.addRequestLineParameters(queryStringWithUrlEncoded);
+        parameters.addRequestParameters(queryStringWithUrlEncoded);
         assertThat(parameters.getParameter("name")).isEqualTo("john park");
         assertThat(parameters.getParameter("age")).isEqualTo("20");
     }
 
     @Test
-    void addRequestLineParameter_null() {
-        parameters.addRequestLineParameters(null);
+    void addRequestParameters_null() {
+        parameters.addRequestParameters(null);
         assertThat(parameters.getParameter("name")).isNull();
         assertThat(parameters.getParameter("age")).isNull();
     }
 
     @Test
-    void addRequestLineParameter_empty() {
-        parameters.addRequestLineParameters("");
-        assertThat(parameters.getParameter("")).isNull();
-        assertThat(parameters.getParameter("")).isNull();
-    }
-
-    @Test
-    void addBodyRequestParameters() {
-        String queryString = "name=john%20park&age=20";
-        parameters.addBodyParameters(queryString);
-        assertThat(parameters.getParameter("name")).isEqualTo("john park");
-        assertThat(parameters.getParameter("age")).isEqualTo("20");
-    }
-
-    @Test
-    void addBodyRequestParameters_null() {
-        parameters.addBodyParameters(null);
-        assertThat(parameters.getParameter("name")).isNull();
-        assertThat(parameters.getParameter("age")).isNull();
-    }
-
-    @Test
-    void addBodyRequestParameters_empty() {
-        parameters.addBodyParameters("");
+    void addRequestParameters_empty() {
+        parameters.addRequestParameters("");
         assertThat(parameters.getParameter("")).isNull();
         assertThat(parameters.getParameter("")).isNull();
     }

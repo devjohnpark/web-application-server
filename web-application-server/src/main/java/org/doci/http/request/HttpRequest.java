@@ -7,7 +7,6 @@ import org.doci.webresources.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// 클라이언트 요청 데이터 처리 (HttpRequest)
 public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private BufferedReader br;
@@ -30,7 +29,6 @@ public class HttpRequest {
         setParameters();
     }
 
-
     private RequestLine getRequestLine() throws IOException {
         String line = br.readLine();
         if (line == null) {
@@ -47,17 +45,17 @@ public class HttpRequest {
     }
 
     private void setParameters() throws IOException {
-        parameters.addRequestLineParameters(requestLine.getQueryString());
+        parameters.addRequestParameters(requestLine.getQueryString());
         if (ResourceType.URL.getMimeType().equals(headers.getContentType())) {
-            parameters.addBodyParameters(getAllBody());
+            parameters.addRequestParameters(getAllBody());
         }
     }
 
     public String getAllBody() throws IOException {
         int contentLength = headers.getContentLength();
         char[] body = new char[contentLength];
-        br.read(body, 0, contentLength);
-        return String.copyValueOf(body);
+        int actualLength = br.read(body, 0, contentLength);
+        return String.copyValueOf(body, 0, actualLength);
     }
 
     public BufferedReader getBufferedReader() { return br; }
