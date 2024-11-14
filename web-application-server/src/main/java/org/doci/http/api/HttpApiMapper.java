@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class HttpApiMapper {
     private final static Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
+
     static {
         httpApiHandlers.put("/", new DefaultHttpApiHandler(new WebResourceProvider(ServerConfig.getWebBase(), new WebResourceHandler())));
     }
