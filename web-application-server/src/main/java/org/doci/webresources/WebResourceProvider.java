@@ -4,7 +4,6 @@ import org.doci.webserver.ServerConfig;
 
 public class WebResourceProvider {
     private static WebResourceProvider instance;
-
     private final String rootPath;
     private final ResourceHandler resourceHandler;
 

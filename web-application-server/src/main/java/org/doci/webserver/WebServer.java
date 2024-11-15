@@ -3,6 +3,7 @@ package org.doci.webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 
 // WebServer
@@ -13,19 +14,16 @@ import java.net.ServerSocket;
 // 클라이언트 연결 대기용 소켓 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class WebServer {
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
-    private static final ServerConfig serverConfig = new ServerConfig();
-    private static final ServerContext serverContext = new ServerContext();
 
     public static void main(String[] args) throws Exception {
-        serverInit();
-        int port = serverConfig.getPort();
+        ServerConfig serverConfig = new ServerConfig("./src/main/resources/server.xml");
+        ServerContext serverContext = new ServerContext(serverConfig);
+        start(serverConfig.getPort());
+    }
+
+    private static void start(int port) throws IOException {
         log.debug("Web Application Server started {} Port.", port);
         Connector connector = new Connector(new ServerSocket(port));
         connector.connect();
-    }
-
-    private static void serverInit() throws Exception {
-        serverConfig.init("./src/main/resources/server.xml");
-        serverContext.init(serverConfig);
     }
 }

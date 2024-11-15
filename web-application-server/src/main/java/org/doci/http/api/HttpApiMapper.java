@@ -1,7 +1,5 @@
 package org.doci.http.api;
 
-import org.doci.webresources.WebResourceProvider;
-import org.doci.webresources.WebResourceHandler;
 import org.doci.webserver.ServerConfig;
 import org.doci.webserver.WebServer;
 

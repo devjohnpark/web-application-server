@@ -9,7 +9,7 @@ public class ServerConfig {
     private String webBase = "webapp";
 
     // XML 파일을 읽어와서 port와 webBase를 설정
-    public void init(String filePath) throws Exception {
+    public ServerConfig(String filePath) throws Exception {
         File configFile = new File(filePath);
 
         // XML 파일을 파싱하기 위한 DocumentBuilder
