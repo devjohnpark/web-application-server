@@ -19,6 +19,13 @@ class HttpApiMapperTest {
     }
 
     @Test
+    void registerHttpApiHandler_default() {
+        HttpApiMapper.registerHttpApiHandler(null, new DefaultHttpApiHandler(WebResourceProvider.getInstance("webapp")));
+        HttpApiHandler httpApiHandler = HttpApiMapper.getHttpApiHandler(null);
+        assertEquals(DefaultHttpApiHandler.class, httpApiHandler.getClass());
+    }
+
+    @Test
     void registerHttpApiHandler() {
         HttpApiMapper.registerHttpApiHandler("/user/create", new LoginHttpApiHandler());
         HttpApiHandler httpApiHandler = HttpApiMapper.getHttpApiHandler("/user/create");

@@ -3,14 +3,13 @@ package org.doci.webserver;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
-import java.io.IOException;
 
 public class ServerConfig {
-    private static int port = 8080;
-    private static String webBase = "webapp";
+    private int port = 8080;
+    private String webBase = "webapp";
 
     // XML 파일을 읽어와서 port와 webBase를 설정
-    public static void loadConfig(String filePath) throws Exception {
+    public void init(String filePath) throws Exception {
         File configFile = new File(filePath);
 
         // XML 파일을 파싱하기 위한 DocumentBuilder
@@ -26,11 +25,11 @@ public class ServerConfig {
         webBase = webBaseNodes.item(0).getTextContent();
     }
 
-    public static int getPort() {
+    public int getPort() {
         return port;
     }
 
-    public static String getWebBase() {
+    public String getWebBase() {
         return webBase;
     }
 }

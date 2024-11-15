@@ -1,15 +1,26 @@
 package org.doci.webresources;
 
+import org.doci.webserver.ServerConfig;
+
 public class WebResourceProvider {
+    private static WebResourceProvider instance;
+
     private final String rootPath;
     private final ResourceHandler resourceHandler;
 
-    public WebResourceProvider(String rootPath, ResourceHandler resourceHandler) {
+    private WebResourceProvider(String rootPath, ResourceHandler resourceHandler) {
         this.rootPath = rootPath;
         this.resourceHandler = resourceHandler;
     }
 
-    public final Resource getResource(String path) {
+    public static synchronized WebResourceProvider getInstance(String webBase) {
+        if (instance == null) {
+            instance = new WebResourceProvider(webBase, new WebResourceHandler());
+        }
+        return instance;
+    }
+
+    public Resource getResource(String path) {
         String resourcePath = rootPath + setIfRootPath(path);
         byte[] content = resourceHandler.readResource(resourcePath);
         ResourceType resourceType = ResourceType.fromFilePath(resourcePath);
@@ -19,11 +30,11 @@ public class WebResourceProvider {
         return new Resource();
     }
 
-    private final boolean isSupportedResourceType(ResourceType contentType) {
+    private boolean isSupportedResourceType(ResourceType contentType) {
         return contentType != null;
     }
 
-    private final boolean isReadContent(byte[] content) {
+    private boolean isReadContent(byte[] content) {
         return content != null;
     }
 

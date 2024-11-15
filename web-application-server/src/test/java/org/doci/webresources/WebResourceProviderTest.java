@@ -10,7 +10,7 @@ class WebResourceProviderTest {
 
     @BeforeEach
     void setUp() {
-        webResourceProvider = new WebResourceProvider("webapp", new WebResourceHandler());
+        webResourceProvider = WebResourceProvider.getInstance("webapp");
     }
 
     @Test

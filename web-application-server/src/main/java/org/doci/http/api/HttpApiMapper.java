@@ -11,10 +11,6 @@ import java.util.Map;
 public class HttpApiMapper {
     private final static Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
 
-    static {
-        httpApiHandlers.put("/", new DefaultHttpApiHandler(new WebResourceProvider(ServerConfig.getWebBase(), new WebResourceHandler())));
-    }
-
     public static void registerHttpApiHandler(String path, HttpApiHandler handler) {
         httpApiHandlers.put(path, handler);
     }
@@ -22,7 +18,7 @@ public class HttpApiMapper {
     public static HttpApiHandler getHttpApiHandler(String path) {
         HttpApiHandler httpApiHandler = httpApiHandlers.get(path);
         if (httpApiHandler == null) {
-            httpApiHandler = httpApiHandlers.get("/");
+            return httpApiHandlers.get(null);
         }
         return httpApiHandler;
     }
