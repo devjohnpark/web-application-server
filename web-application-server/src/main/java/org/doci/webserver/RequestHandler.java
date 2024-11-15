@@ -46,7 +46,7 @@ public class RequestHandler extends Thread {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(out);
             HttpApiHandler httpApiHandler = HttpApiMapper.getHttpApiHandler(request.getPath());
-            httpApiHandler.service(request, response);
+            httpApiHandler.handleApi(request, response);
         } catch (IOException e) {
             log.error(e.getMessage());
         }

@@ -12,7 +12,7 @@ public abstract class AbstractHttpApiHandler implements HttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(AbstractHttpApiHandler.class);
 
     @Override
-    public void service(HttpRequest request, HttpResponse response) {
+    public void handleApi(HttpRequest request, HttpResponse response) {
         HttpMethod method = request.getMethod();
         if (HttpMethod.GET.equals(method)) {
             doGet(request, response);

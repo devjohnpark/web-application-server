@@ -18,11 +18,11 @@ public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
     }
 
     @Override
-    public void service(HttpRequest request, HttpResponse response) {
+    public void handleApi(HttpRequest request, HttpResponse response) {
         if (HttpMethod.GET.equals(request.getMethod())) {
             doGet(request, response);
         } else {
-            super.service(request, response);
+            super.handleApi(request, response);
         }
     }
 

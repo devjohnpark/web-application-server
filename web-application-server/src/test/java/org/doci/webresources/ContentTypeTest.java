@@ -13,7 +13,7 @@ class ContentTypeTest {
     }
 
     @Test
-    void fromFilePath_unsupport_file_format() {
+    void fromFilePath_unsupported_file_format() {
         String resourcePath = "/index.ht";
         assertThat(ResourceType.fromFilePath(resourcePath)).isNull();
     }
