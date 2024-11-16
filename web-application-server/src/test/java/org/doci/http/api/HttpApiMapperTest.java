@@ -31,4 +31,9 @@ class HttpApiMapperTest {
         HttpApiHandler httpApiHandler = HttpApiMapper.getHttpApiHandler("/user/create");
         assertEquals(LoginHttpApiHandler.class, httpApiHandler.getClass());
     }
+
+    @Test
+    void registerHttpApiHandler_handler_null() {
+        assertThrows(IllegalArgumentException.class, () -> HttpApiMapper.registerHttpApiHandler("/user", null));
+    }
 }

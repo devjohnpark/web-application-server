@@ -11,6 +11,7 @@ public class HttpApiMapper {
     private final static Map<String, HttpApiHandler> httpApiHandlers = new HashMap<String, HttpApiHandler>();
 
     public static void registerHttpApiHandler(String path, HttpApiHandler handler) {
+        if (handler == null) { throw new IllegalArgumentException(); }
         httpApiHandlers.put(path, handler);
     }
 
