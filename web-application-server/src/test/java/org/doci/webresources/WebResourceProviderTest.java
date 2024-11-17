@@ -6,12 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class WebResourceProviderTest {
-    private WebResourceProvider webResourceProvider;
-
-    @BeforeEach
-    void setUp() {
-        webResourceProvider = WebResourceProvider.getInstance("webapp");
-    }
+    private final WebResourceProvider webResourceProvider = WebResourceProvider.getInstance("webapp");
 
     @Test
     void getResource_root_path() {

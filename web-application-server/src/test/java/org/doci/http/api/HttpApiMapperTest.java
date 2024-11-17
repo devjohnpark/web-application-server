@@ -1,9 +1,6 @@
 package org.doci.http.api;
 
-import org.doci.webresources.WebResourceHandler;
 import org.doci.webresources.WebResourceProvider;
-import org.doci.webserver.ServerConfig;
-import org.doci.webserver.WebServer;
 import org.junit.jupiter.api.Test;
 
 

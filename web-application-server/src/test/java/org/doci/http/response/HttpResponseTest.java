@@ -52,7 +52,7 @@ class HttpResponseTest {
     @Test
     void sendError() {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        response.sendError(status);
+        response.sendError(HttpStatus.NOT_FOUND);
 
         String result = outputStream.toString();
         assertTrue(result.startsWith("HTTP/1.1 404 Not Found\r\n"));

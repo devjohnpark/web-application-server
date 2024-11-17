@@ -1,32 +1,40 @@
 package org.doci.webresources;
 
-import org.doci.webserver.ServerConfig;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-public class WebResourceProvider {
+public class WebResourceProvider implements ResourceProvider {
     private static WebResourceProvider instance;
     private final String rootPath;
-    private final ResourceHandler resourceHandler;
 
-    private WebResourceProvider(String rootPath, ResourceHandler resourceHandler) {
+    private WebResourceProvider(String rootPath) {
         this.rootPath = rootPath;
-        this.resourceHandler = resourceHandler;
     }
 
     public static synchronized WebResourceProvider getInstance(String webBase) {
         if (instance == null) {
-            instance = new WebResourceProvider(webBase, new WebResourceHandler());
+            instance = new WebResourceProvider(webBase);
         }
         return instance;
     }
 
-    public Resource getResource(String path) {
+    public final Resource getResource(String path) {
         String resourcePath = rootPath + setIfRootPath(path);
-        byte[] content = resourceHandler.readResource(resourcePath);
+        byte[] content = readResource(resourcePath);
         ResourceType resourceType = ResourceType.fromFilePath(resourcePath);
         if (isReadContent(content) && isSupportedResourceType(resourceType)) {
             return new Resource(content, resourceType.getMimeType());
         }
         return new Resource();
+    }
+
+    private byte[] readResource(String filePath) {
+        try {
+            return Files.readAllBytes(Paths.get(filePath));
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private boolean isSupportedResourceType(ResourceType contentType) {
