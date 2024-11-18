@@ -5,7 +5,6 @@ import org.doci.http.api.HttpApiMapper;
 import org.doci.webresources.WebResourceProvider;
 
 public class ServerContext {
-    private WebResourceProvider webResourceProvider;
 
     public ServerContext(ServerConfig serverConfig) {
         addHttpApiHandlers(getWebResourceProvider(serverConfig));
