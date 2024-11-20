@@ -11,10 +11,9 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultHttpApiHandler extends AbstractHttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpApiHandler.class);
-    private final WebResourceProvider webResourceProvider;
 
     public DefaultHttpApiHandler(WebResourceProvider webResourceProvider) {
-        this.webResourceProvider = webResourceProvider;
+        super(webResourceProvider);
     }
 
     @Override

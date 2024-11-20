@@ -5,11 +5,19 @@ import org.doci.http.request.HttpRequest;
 import org.doci.http.request.HttpVersion;
 import org.doci.http.response.HttpResponse;
 import org.doci.http.response.HttpStatus;
+import org.doci.webresources.Resource;
+import org.doci.webresources.WebResourceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractHttpApiHandler implements HttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(AbstractHttpApiHandler.class);
+
+    protected final WebResourceProvider webResourceProvider;
+
+    protected AbstractHttpApiHandler(WebResourceProvider webResourceProvider) {
+        this.webResourceProvider = webResourceProvider;
+    }
 
     @Override
     public void handleApi(HttpRequest request, HttpResponse response) {

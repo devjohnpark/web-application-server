@@ -12,18 +12,22 @@ import java.net.ServerSocket;
 // 소켓을 listen 상태로 변경해서 클라이언트의 요청을 대기한다.
 // 클라이언트가 서버로 들어온 요청을 수락하고, 실제 클라이언트와 연결할 소켓을 생성한다.
 // 클라이언트 연결 대기용 소켓 닫기 (커널 영역에 할당된 I/O 자원을 해제)
+
+
+// 서버 구성 읽기 -> 웹 서비스 초기화 -> 의존성 주입: Connector 클라이언트와 연결
 public class WebServer {
+    private static final String RESOURCE_BASE = "./src/main/resources";
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
 
     public static void main(String[] args) throws Exception {
-        ServerConfig serverConfig = new ServerConfig("./src/main/resources/server.xml");
-        ServerContext serverContext = new ServerContext(serverConfig);
-        start(serverConfig.getPort());
+        ServerConfig serverConfig = new ServerConfig(RESOURCE_BASE);
+        ServiceConfig serviceConfig = new ServiceConfig(RESOURCE_BASE, serverConfig);
+        start(serverConfig.getPort(), serviceConfig);
     }
 
-    private static void start(int port) throws IOException {
+    private static void start(int port, ServiceConfig serviceConfig) throws IOException {
         log.debug("Web Application Server started {} Port.", port);
-        Connector connector = new Connector(new ServerSocket(port));
+        Connector connector = new Connector(new ServerSocket(port), serviceConfig);
         connector.connect();
     }
 }

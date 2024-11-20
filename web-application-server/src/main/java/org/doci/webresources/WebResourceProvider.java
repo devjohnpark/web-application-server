@@ -5,19 +5,30 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class WebResourceProvider implements ResourceProvider {
-    private static WebResourceProvider instance;
+//    private static WebResourceProvider instance = null;
     private final String rootPath;
 
-    private WebResourceProvider(String rootPath) {
-        this.rootPath = rootPath;
+//    private WebResourceProvider(String rootPath) {
+//        this.rootPath = rootPath;
+//    }
+
+    public WebResourceProvider(String webBase) {
+        this.rootPath = webBase;
     }
 
-    public static synchronized WebResourceProvider getInstance(String webBase) {
-        if (instance == null) {
-            instance = new WebResourceProvider(webBase);
-        }
-        return instance;
-    }
+//    public static synchronized WebResourceProvider getInstance(String webBase) {
+//        if (instance == null) {
+//            instance = new WebResourceProvider(webBase);
+//        }
+//        return instance;
+//    }
+
+//    public static WebResourceProvider getInstance(String webBase) {
+////        if (instance == null) {
+////            instance = new WebResourceProvider(webBase);
+////        }
+//        return instance;
+//    }
 
     public final Resource getResource(String path) {
         String resourcePath = rootPath + setIfRootPath(path);
