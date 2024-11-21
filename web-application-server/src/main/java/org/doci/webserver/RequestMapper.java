@@ -9,16 +9,16 @@ import java.util.Map;
 
 public class RequestMapper {
     private static final Logger log = LoggerFactory.getLogger(RequestMapper.class);
-    private final Map<String, AbstractHttpApiHandler> handlerMappings; // new HashMap<String, HttpApiHandler>()
+    private final Map<String, AbstractHttpApiHandler> requestMappings; // new HashMap<String, HttpApiHandler>()
 
-    public RequestMapper(Map<String, AbstractHttpApiHandler> handlerMappings) {
-         this.handlerMappings = handlerMappings;
+    public RequestMapper(Map<String, AbstractHttpApiHandler> requestMappings) {
+         this.requestMappings = requestMappings;
     }
 
     public HttpApiHandler getHttpApiHandler(String path) {
-        HttpApiHandler httpApiHandler = handlerMappings.get(path);
+        HttpApiHandler httpApiHandler = requestMappings.get(path);
         if (httpApiHandler == null) {
-            return handlerMappings.get("/");
+            return requestMappings.get("/");
         }
         return httpApiHandler;
     }

@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpRequestTest {
     private HttpRequest httpRequest;
+    private String fileName;
 
     private void createHttpRequest(String fileName) {
         try {

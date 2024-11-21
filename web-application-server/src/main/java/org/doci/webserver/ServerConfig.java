@@ -1,17 +1,23 @@
 package org.doci.webserver;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.*;
 import java.io.File;
+import java.io.IOException;
 
 public class ServerConfig {
     private static final String SERVER_CONFIG_BASE = "/server.xml";
 
-    private String appBase = "app";
     private int port = 8080;
     private String webBase = "webapp";
 
     public ServerConfig(String filePath) throws Exception {
+        loadServerConfig(filePath);
+    }
+
+    private void loadServerConfig(String filePath) throws ParserConfigurationException, SAXException, IOException {
         File configFile = new File(filePath + SERVER_CONFIG_BASE);
 
         // XML 파일을 파싱하기 위한 DocumentBuilder
@@ -24,10 +30,6 @@ public class ServerConfig {
 
         NodeList webBaseNodes = document.getElementsByTagName("webBase");
         webBase = webBaseNodes.item(0).getTextContent();
-    }
-
-    public String getAppBase() {
-        return appBase;
     }
 
     public int getPort() {

@@ -21,13 +21,13 @@ public class WebServer {
 
     public static void main(String[] args) throws Exception {
         ServerConfig serverConfig = new ServerConfig(RESOURCE_BASE);
-        ServiceConfig serviceConfig = new ServiceConfig(RESOURCE_BASE, serverConfig);
-        start(serverConfig.getPort(), serviceConfig);
+        WebServiceConfig webServiceConfig = new WebServiceConfig(RESOURCE_BASE, serverConfig);
+        start(serverConfig.getPort(), webServiceConfig);
     }
 
-    private static void start(int port, ServiceConfig serviceConfig) throws IOException {
+    private static void start(int port, WebServiceConfig webServiceConfig) throws IOException {
         log.debug("Web Application Server started {} Port.", port);
-        Connector connector = new Connector(new ServerSocket(port), serviceConfig);
+        Connector connector = new Connector(new ServerSocket(port), webServiceConfig);
         connector.connect();
     }
 }

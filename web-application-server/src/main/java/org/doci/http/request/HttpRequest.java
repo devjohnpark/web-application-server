@@ -3,7 +3,7 @@ package org.doci.http.request;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-import org.doci.webresources.ResourceType;
+import org.doci.webresource.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

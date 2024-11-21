@@ -5,8 +5,7 @@ import org.doci.http.request.HttpRequest;
 import org.doci.http.request.HttpVersion;
 import org.doci.http.response.HttpResponse;
 import org.doci.http.response.HttpStatus;
-import org.doci.webresources.Resource;
-import org.doci.webresources.WebResourceProvider;
+import org.doci.webresource.WebResourceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

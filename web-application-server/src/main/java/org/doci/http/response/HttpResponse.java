@@ -1,7 +1,7 @@
 package org.doci.http.response;
 
 import org.doci.http.request.HttpVersion;
-import org.doci.webresources.ResourceType;
+import org.doci.webresource.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.doci.util.DateFormatter;

@@ -1,6 +1,4 @@
-package org.doci.webresources;
-
-import org.doci.http.util.HttpParser;
+package org.doci.webresource;
 
 public enum ResourceType {
     TEXT(".txt", "text/plain"),

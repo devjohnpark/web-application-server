@@ -1,11 +1,8 @@
 package org.doci.http.response;
 
-import org.doci.webresources.Resource;
-import org.doci.webresources.ResourceType;
+import org.doci.webresource.ResourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;

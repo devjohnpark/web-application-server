@@ -1,6 +1,5 @@
-package org.doci.webresources;
+package org.doci.webresource;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

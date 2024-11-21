@@ -1,8 +1,6 @@
 package org.doci.http.response;
 
-import org.doci.http.request.HttpRequest;
-import org.doci.util.DateFormatter;
-import org.doci.webresources.ResourceType;
+import org.doci.webresource.ResourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

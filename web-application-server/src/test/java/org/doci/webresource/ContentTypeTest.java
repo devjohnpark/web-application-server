@@ -1,4 +1,4 @@
-package org.doci.webresources;
+package org.doci.webresource;
 
 import org.junit.jupiter.api.Test;
 
