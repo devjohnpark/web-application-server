@@ -19,7 +19,6 @@ import java.util.Map;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-// Connector가 WebServiceConfig 인스턴스로 HttpApiMapper를 생성해서 RequestHandler에게 반환
 public class WebServiceConfig {
     private static final String WEB_SERVICE_BASE = "/webservice.xml";
     private static final Logger log = LoggerFactory.getLogger(WebServiceConfig.class);
