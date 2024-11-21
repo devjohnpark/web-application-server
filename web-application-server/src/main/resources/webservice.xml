@@ -1,3 +1,0 @@
-<services>
-    <service class="org.doci.http.api.DefaultHttpApiHandler" path="/"/>
-</services>

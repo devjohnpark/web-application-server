@@ -11,6 +11,8 @@ import java.util.Map;
 // &: query parameter 간의 분리
 // =: key, value 간의 분리
 public class HttpParser {
+    private HttpParser() {}
+    
     public static Map<String, String> parseQueryString(String queryString) {
         return parseValues(queryString, "&");
     }

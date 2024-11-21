@@ -16,12 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class RequestMapperTest {
     private RequestMapper requestMapper;
+    private final WebResourceProvider webResourceProvider = new WebResourceProvider("webbapp");
 
     @BeforeEach
     void setUp() {
+
         Map<String, AbstractHttpApiHandler> requestMappings = Map.of(
-                "/", new DefaultHttpApiHandler(WebResourceProvider.getInstance("webbapp")),
-                "/user/create", new LoginHttpApiHandler(WebResourceProvider.getInstance("webbapp"))
+                "/", new DefaultHttpApiHandler(webResourceProvider),
+                "/user/create", new LoginHttpApiHandler(webResourceProvider)
         );
         requestMapper = new RequestMapper(requestMappings);
     }

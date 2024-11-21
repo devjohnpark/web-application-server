@@ -12,9 +12,10 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractHttpApiHandler implements HttpApiHandler {
     private static final Logger log = LoggerFactory.getLogger(AbstractHttpApiHandler.class);
 
-    protected final WebResourceProvider webResourceProvider;
+    public WebResourceProvider webResourceProvider = null;
 
-    protected AbstractHttpApiHandler(WebResourceProvider webResourceProvider) {
+    @Override
+    public void init(WebResourceProvider webResourceProvider) {
         this.webResourceProvider = webResourceProvider;
     }
 

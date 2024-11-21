@@ -1,10 +1,13 @@
 package org.doci.webserver;
 
+import org.doci.http.api.AbstractHttpApiHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.List;
 
 // WebServer
 // main 메서드 인자값으로 포트 번호를 받을 수 있도록 구현
@@ -13,18 +16,33 @@ import java.net.ServerSocket;
 // 클라이언트가 서버로 들어온 요청을 수락하고, 실제 클라이언트와 연결할 소켓을 생성한다.
 // 클라이언트 연결 대기용 소켓 닫기 (커널 영역에 할당된 I/O 자원을 해제)
 public class WebServer {
-    private static final String RESOURCE_BASE = "./src/main/resources";
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
+    private final ServerSocket serverSocket = new ServerSocket();
+    private final WebService webService = new WebService();
 
-    public static void main(String[] args) throws Exception {
-        ServerConfig serverConfig = new ServerConfig(RESOURCE_BASE);
-        WebServiceConfig webServiceConfig = new WebServiceConfig(RESOURCE_BASE, serverConfig);
-        start(serverConfig.getPort(), webServiceConfig);
+    public WebServer(int port) throws IOException {
+        serverSocket.bind(new InetSocketAddress("localhost", port));
     }
 
-    private static void start(int port, WebServiceConfig webServiceConfig) throws IOException {
-        log.debug("Web Application Server started {} Port.", port);
-        Connector connector = new Connector(new ServerSocket(port), webServiceConfig);
+    public WebServer(int port, String hostName) throws IOException {
+        serverSocket.bind(new InetSocketAddress(hostName, port));
+    }
+
+    public String getWebServerName() {
+        return serverSocket.getInetAddress().getHostName();
+    }
+
+    public int getWebServerPort() {
+        return serverSocket.getLocalPort();
+    }
+
+    public WebService getWebService() {
+        return webService;
+    }
+
+    public void start() throws IOException {
+        log.debug("Web Application Server started - Host: {}, Port: {}.", serverSocket.getInetAddress().getHostName(), serverSocket.getLocalPort());
+        Connector connector = new Connector(serverSocket, webService);
         connector.connect();
     }
 }

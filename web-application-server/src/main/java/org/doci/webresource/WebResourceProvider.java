@@ -8,16 +8,16 @@ public class WebResourceProvider implements ResourceProvider {
     private static WebResourceProvider instance = null;
     private final String rootPath;
 
-    private WebResourceProvider(String rootPath) {
+    public WebResourceProvider(String rootPath) {
         this.rootPath = rootPath;
     }
 
-    public static synchronized WebResourceProvider getInstance(String webBase) {
-        if (instance == null) {
-            instance = new WebResourceProvider(webBase);
-        }
-        return instance;
-    }
+//    public static synchronized WebResourceProvider getInstance(String webBase) {
+//        if (instance == null) {
+//            instance = new WebResourceProvider(webBase);
+//        }
+//        return instance;
+//    }
 
     public final Resource getResource(String path) {
         String resourcePath = rootPath + setIfRootPath(path);
