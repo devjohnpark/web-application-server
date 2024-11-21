@@ -29,7 +29,7 @@ public class WebServiceConfig {
         this.requestMapper = new RequestMapper(loadWebServices(serverConfig.getWebBase(), resourceBase + WEB_SERVICE_BASE));
     }
 
-    public Map<String, AbstractHttpApiHandler> loadWebServices(String webResourcePath, String webServicePath) throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private Map<String, AbstractHttpApiHandler> loadWebServices(String webResourcePath, String webServicePath) throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         // XML 파일 파싱 설정
         File webServiceFile = new File(webServicePath);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
